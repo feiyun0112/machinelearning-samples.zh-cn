@@ -1,13 +1,13 @@
 # ML.NET 示例
 [![](https://dotnet.visualstudio.com/_apis/public/build/definitions/9ee6d478-d288-47f7-aacc-f6e6d082ae6d/22/badge)](https://dotnet.visualstudio.com/public/_build/index?definitionId=22 )
 [ML.NET](https://www.microsoft.com/net/learn/apps/machine-learning-and-ai/ml-dotnet) 是一个跨平台的开源机器学习框架，使.NET开发人员使用机器学习变得很容易。在这个GitHub 存储库中，我们提供了示例，这些示例将帮助您开始使用ML.NET，以及如何将ML.NET加入到现有的和新的.NET应用程序中。
-
+<p style="display:none;">翻译By https://github.com/feiyun0112</p>
 存储库中有两种类型的示例/应用程序：
 
 * ![](https://github.com/dotnet/machinelearning-samples/blob/features/samples-new-api/images/app-type-getting-started.png)  入门 - 针对每个机器学习任务或领域的ML.NET代码示例，通常作为简单的控制台应用程序实现。 
 
 * ![](https://github.com/dotnet/machinelearning-samples/blob/features/samples-new-api/images/app-type-e2e.png)  终端应用程序 - 使用ML.NET进行机器学习的Web，桌面，移动和其他应用程序的实际例子
-
+<p style="display:none;">翻译By https://github.com/feiyun 0112</p>
 根据场景和机器学习问题/任务，官方ML.NET示例被分成多个类别，可通过下表访问：
 
 <table>
@@ -139,7 +139,7 @@
   </td>
  </tr>
  </table>
-
+<p style="display:none;">翻译By https://github.com /feiyun0112</p>
 **配置NuGet源:** 通常，您只需要使用常规的NuGet源 https://api.nuget.org/v3/index.json ， 然而，在发布次要版本（例如0.8、0.9等）之前的几天内，我们将使用MyGet中可用的预览版NuGet包（例如0.8.0-preview-27128-1），这在常规NuGet源中不可用。
 
 如果是这种情况，请在Visual Studio中配置MyGet源：
