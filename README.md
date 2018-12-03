@@ -71,7 +71,7 @@
  </tr>
  <tr>
    <td width="25%">
-      <h3>建议</h3>
+      <h3>推荐系统</h3>
       <img src="images/Recommendation.png" alt="建议图标" width="120" height="120"  align="middle">
   </td>
   <td width="35%">
