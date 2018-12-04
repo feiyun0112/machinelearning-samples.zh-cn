@@ -1,43 +1,43 @@
-# Sentiment Analysis for User Reviews
+# 用户评论的情绪分析 
 
-| ML.NET version | API type          | Status                        | App Type    | Data type | Scenario            | ML Task                   | Algorithms                  |
+| ML.NET 版本 | API 类型          | 状态                        | 应用程序类型    | 数据类型 | 场景            | 机器学习任务                   | 算法                  |
 |----------------|-------------------|-------------------------------|-------------|-----------|---------------------|---------------------------|-----------------------------|
-| v0.7           | Dynamic API | README.md updated | Console app | .tsv files | Sentiment Analysis | Two-class  classification | Linear Classification |
+| v0.7           | 动态API | README.md 已更新 | 控制台应用程序 | .tsv 文件 | 情绪分析 | 二元分类 | 线性分类 |
 
-In this introductory sample, you'll see how to use [ML.NET](https://www.microsoft.com/net/learn/apps/machine-learning-and-ai/ml-dotnet) to predict a sentiment (positive or negative) for customer reviews. In the world of machine learning, this type of prediction is known as **binary classification**.
+在这个介绍性示例中，您将看到如何使用[ML.NET](https://www.microsoft.com/net/./apps/machine-.-and-ai/ml-dotnet)预测客户评论的情绪（积极或消极）。在机器学习领域中，这种类型的预测被称为**二元分类**。
 
-## Problem
-This problem is centered around predicting if a customer's review has positive or negative sentiment. We will use small wikipedia-detox-datasets (one dataset for training and a second dataset for model's accuracy evaluation) that were processed by humans and each comment has been assigned a sentiment label: 
-* 0 - nice/positive
-* 1 - toxic/negative
+## 问题
+这个问题集中在预测客户的评论是否具有正面或负面情绪。我们将使用小型的wikipedia-detox-datasets（一个用于训练的数据集，一个用于模型的准确性评估的数据集），这些数据集已经由人工处理过，并且每个评论都被分配了一个情绪标签：
+* 0 - 好评/正面
+* 1 - 差评/负面
 
-Using those datasets we will build a model that when predicting it will analyze a string and predict a sentiment value of 0 or 1.
+我们将使用这些数据集构建一个模型，在预测时将分析字符串并预测情绪值为0或1。
 
-## ML task - Binary classification
-The generalized problem of **binary classification** is to classify items into one of two classes (classifying items into more than two classes is called **multiclass classification**).
+## 机器学习任务 - 二元分类
+**二元分类**一般用于将项目分类为两个类中的一个的问题（将项目分类为两个以上的类称为**多类分类**）。
 
-* predict if an insurance claim is valid or not.
-* predict if a plane will be delayed or will arrive on time.
-* predict if a face ID (photo) belongs to the owner of a device.
+* 预测保险索赔是否有效。
+* 预测飞机是否会延误或将准时到达。
+* 预测face ID（照片）是否属于设备的所有者。 
 
-The common feature for all those examples is that the parameter we want to predict can take only one of two values. In other words, this value is represented by `boolean` type.
+所有这些示例的共同特征是我们想要预测的参数只能采用两个值中的一个。 换句话说，该值由 `boolean` 类型表示。
 
-## Solution
-To solve this problem, first we will build an ML model. Then we will train the model on existing data, evaluate how good it is, and lastly we'll consume the model to predict a sentiment for new reviews.
+## 解决方案
+要解决这个问题，首先我们将建立一个机器学习模型。然后，我们将在现有数据上训练模型，评估其有多好，最后我们将使用该模型来预测新评论的情绪。 
 
-![Build -> Train -> Evaluate -> Consume](../shared_content/modelpipeline.png)
+![建立 -> 训练 -> 评估 -> 使用](../shared_content/modelpipeline.png)
 
-### 1. Build model
+### 1. 建立模型
 
-Building a model includes: 
+建立模型包括：
 
-* Define the data's schema maped to the datasets to read (`wikipedia-detox-250-line-data.tsv` and `wikipedia-detox-250-line-test.tsv`) with a DataReader
+* 定义映射到数据集的数据架构，以便用DataReader读取(“wikipedia-detox-250-line-data.tsv”和“wikipedia-detox-250-line-test.tsv”)
 
-* Create an Estimator and transform the data to numeric vectors so it can be used effectively by an ML algorithm (with `FeaturizeText`)
+* 创建一个评估器，并将数据转换为数值向量，以便它能够被机器学习算法有效地使用（使用“FeaturizeText”）
 
-* Choosing a trainer/learning algorithm (such as `FastTree`) to train the model with. 
+* 选择训练器/学习算法(如“FastTree”)来训练模型。
 
-The initial code is similar to the following:
+初始代码类似以下内容：
 
 ```CSharp
 // STEP 1: Common data loading configuration
@@ -62,22 +62,22 @@ var trainer = mlContext.BinaryClassification.Trainers.FastTree(labelColumn: "Lab
 var trainingPipeline = dataProcessPipeline.Append(trainer);
 ```
 
-### 2. Train model
-Training the model is a process of running the chosen algorithm on a training data (with known sentiment values) to tune the parameters of the model. It is implemented in the `Fit()` method from the Estimator object. 
+### 2. 训练模型
+训练模型是在训练数据（具有已知情绪值）上运行所选算法以调整模型参数的过程。它是在评估器对象的 `Fit()` 方法中实现。
 
-To perform training you need to call the `Fit()` method while providing the training dataset (`wikipedia-detox-250-line-data.tsv` file) in a DataView object.
+为了执行训练，您需要在DataView对象中提供了训练数据集（`wikipedia-detox-250-line-data.tsv`文件）后调用 `Fit()` 方法。
 
 ```CSharp
 ITransformer trainedModel = trainingPipeline.Fit(trainingDataView);
 ```
 
-Note that ML.NET works with data with a lazy-load approach, so in reality no data is really loaded in memory until you actually call the method .Fit().
+请注意，ML.NET使用延迟加载方式处理数据，所以在实际调用.Fit()方法之前，没有任何数据真正加载到内存中。
 
-### 3. Evaluate model
+### 3. 评估模型
 
-We need this step to conclude how accurate our model operates on new data. To do so, the model from the previous step is run against another dataset that was not used in training (`wikipedia-detox-250-line-test.tsv`). This dataset also contains known sentiments. 
+我们需要这一步骤来判定我们的模型对新数据的准确性。 为此，上一步中的模型再次针对另一个未在训练中使用的数据集（`wikipedia-detox-250-line-test.tsv`）运行。 此数据集也包含了已知的情绪。
 
-`Evaluate()` compares the predicted values for the test dataset and produces various metrics, such as accuracy, you can explore.
+`Evaluate()`比较测试数据集的预测值，并生成各种指标，例如准确性，您可以对其进行浏览。 
 
 ```CSharp
 var predictions = trainedModel.Transform(testDataView);
@@ -86,13 +86,13 @@ var metrics = mlContext.BinaryClassification.Evaluate(predictions, "Label", "Sco
 ConsoleHelper.PrintBinaryClassificationMetrics(trainer.ToString(), metrics);
 ```
 
-If you are not satisfied with the quality of the model, you can try to improve it by providing larger training datasets and by choosing different training algorithms with different hyper-parameters for each algorithm.
+如果您对模型的质量不满意，可以通过提供更大的训练数据集，并为每个算法选择具有不同超参数的不同训练算法来尝试改进它。
 
->*Keep in mind that for this sample the quality is lower than it could be because the datasets were reduced in size so the training is quick. You should use bigger labeled sentiment datasets to significantly improve the quality of your models.*
+>*请记住，对于这个示例，它的质量会低于可能的质量，因为数据集的大小被减少了，以便可以很快地训练。您应该使用更大的已标记情绪的数据集来显著提高模型的质量。*
 
-### 4. Consume model
+### 4. 使用模型
 
-After the model is trained, you can use the `Predict()` API to predict the sentiment for new sample text. 
+训练完模型后，您可以使用`Predict()`API来预测新示例文本的情绪。
 
 ```CSharp
 // Create prediction engine related to the loaded trained model
@@ -102,4 +102,4 @@ var predFunction= trainedModel.MakePredictionFunction<SentimentIssue, SentimentP
 var resultprediction = predFunction.Predict(sampleStatement);
 ```
 
-Where in `resultprediction.PredictionLabel` will be either True or False depending if it is a negative or positive predicted sentiment.
+其中`resultprediction.PredictionLabel`将为True或False，具体取决于它是否被预测为负面或正面的情绪。
