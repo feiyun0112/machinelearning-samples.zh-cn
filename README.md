@@ -48,7 +48,7 @@
   </td>
   <td>
       <h4>问题分类 &nbsp;&nbsp;&nbsp;
-      <a href="samples/csharp/end-to-end-apps/MulticlassClassification-GitHubLabeler">C#</a> &nbsp;&nbsp;&nbsp;<img src="images/app-type-e2e.png" alt="终端应用程序图标"></h4>
+      <a href="samples/csharp/end-to-end-apps/MulticlassClassification-GitHubLabeler">C#（已翻译）</a> &nbsp;&nbsp;&nbsp;<img src="images/app-type-e2e.png" alt="终端应用程序图标"></h4>
       <h4>鸢尾花分类 &nbsp;&nbsp;&nbsp;<a href="samples/csharp/getting-started/MulticlassClassification_Iris">C#</a> &nbsp; &nbsp;<a href="samples/fsharp/getting-started/MulticlassClassification_Iris">F#</a> &nbsp;&nbsp;&nbsp;<img src="images/app-type-getting-started.png" alt="入门图标"></h4>
   </td>
  </tr>
