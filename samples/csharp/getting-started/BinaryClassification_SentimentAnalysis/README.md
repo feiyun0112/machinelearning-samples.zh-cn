@@ -77,7 +77,7 @@ ITransformer trainedModel = trainingPipeline.Fit(trainingDataView);
 
 我们需要这一步骤来判定我们的模型对新数据的准确性。 为此，上一步中的模型再次针对另一个未在训练中使用的数据集（`wikipedia-detox-250-line-test.tsv`）运行。 此数据集也包含了已知的情绪。
 
-`Evaluate()`比较测试数据集的预测值，并生成各种指标，例如准确性，您可以对其进行浏览。 
+`Evaluate()`比较测试数据集的预测值，并生成各种指标，例如准确性，您可以对其进行探究。 
 
 ```CSharp
 var predictions = trainedModel.Transform(testDataView);
