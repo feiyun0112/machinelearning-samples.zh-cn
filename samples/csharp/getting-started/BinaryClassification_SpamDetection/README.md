@@ -1,36 +1,36 @@
-# Spam Detection for Text Messages
+# 垃圾短信检测
 
-| ML.NET version | API type          | Status                        | App Type    | Data type | Scenario            | ML Task                   | Algorithms                  |
+| ML.NET 版本 | API 类型          | 状态                        | 应用程序类型    | 数据类型 | 场景            | 机器学习任务                   | 算法                  |
 |----------------|-------------------|-------------------------------|-------------|-----------|---------------------|---------------------------|-----------------------------|
-| v0.7           | Dynamic API | Might need to update project structure to match template | Console app | .tsv files | Spam detection | Two-class classification | SDCA (linear learner), also showing the CustomMapping estimator, which enables adding custom code to an ML.NET pipeline |
+| v0.7           | 动态API | 可能需要更新项目结构以匹配模板 | 控制台应用程序 | .tsv 文件 | 垃圾信息检测 | 二元分类 | SDCA（线性学习器），还展示了CustomMapping评估器，它可以将自定义代码添加到ML.NET管道 |
 
-In this sample, you'll see how to use [ML.NET](https://www.microsoft.com/net/learn/apps/machine-learning-and-ai/ml-dotnet) to predict whether a text message is spam. In the world of machine learning, this type of prediction is known as **binary classification**.
+在这个示例中，您将看到如何使用[ML.NET](https://www.microsoft.com/net/learn/apps/machine-learning-and-ai/ml-dotnet)来预测短信是否是垃圾信息。在机器学习领域中，这种类型的预测被称为**二元分类**。 
 
-## Problem
+## 问题
 
-Our goal here is to predict whether a text message is spam (an irrelevant/unwanted message). We will use the [SMS Spam Collection Data Set](https://archive.ics.uci.edu/ml/datasets/SMS+Spam+Collection) from UCI, which contains close to 6000 messages that have been classified as being "spam" or "ham" (not spam). We will use this dataset to train a model that can take in new message and predict whether they are spam or not.
+我们的目标是预测一个短信是否是垃圾信息（一个不相关的/不想要的消息）。我们将使用UCI的[SMS Spam Collection Data Set](https://archive.ics.uci.edu/ml/datasets/SMS+Spam+Collection)，其中包含近6000条被分类为“垃圾信息”或“ham”（不是垃圾信息）的消息。我们将使用这个数据集来训练一个模型，该模型可以接收新消息并预测它们是否是垃圾信息。
 
-This is an example of binary classification, as we are classifying the text messages into one of two categories.
+这是一个二元分类的示例，因为我们将短信分类为两个类别。
 
-## Solution
-To solve this problem, first we will build an estimator to define the ML pipeline we want to use. Then we will train this estimator on existing data, evaluate how good it is, and lastly we'll consume the model to predict whether a few examples messages are spam.
+## 解决方案
+要解决这个问题，首先我们将建立一个评估器来定义我们想要使用的机器学习管道。 然后，我们将在现有数据上训练这个评估器，评估其有多好，最后我们将使用该模型来预测一些示例消息是否是垃圾信息。
 
-![Build -> Train -> Evaluate -> Consume](../shared_content/modelpipeline.png)
+![建立 -> 训练 -> 评估 -> 使用](../shared_content/modelpipeline.png)
 
-### 1. Build estimator
+### 1. 建立评估器
 
-To build the estimator we will:
+为了建立评估器，我们将：
 
-* Define how to read the spam dataset that will be downloaded from https://archive.ics.uci.edu/ml/datasets/SMS+Spam+Collection. 
+* 定义如何读取从 https://archive.ics.uci.edu/ml/datasets/SMS+Spam+Collection 下载的垃圾信息数据集。 
 
-* Apply several data transformations:
+* 应用多个数据转换：
 
-    * Convert the label ("spam" or "ham") to a boolean ("true" represents spam) so we can use it with a binary classifier. 
-    * Featurize the text message into a numeric vector so a machine learning trainer can use it
+    * 将标签（“spam”或“ham”）转换为布尔值（“true”表示垃圾信息），这样我们就可以在二元分类器中使用它。    
+    * 将短信转换为数字向量，以便机器学习训练器可以使用它 
+    
+* 添加一个训练器（如`StochasticDualCoordinateAscent`）。
 
-* Add a trainer (such as `LinearClassificationTrainer`).
-
-The initial code is similar to the following:
+初始代码类似以下内容：
 
 ```CSharp
 // Set up the MLContext, which is a catalog of components in ML.NET.
@@ -54,13 +54,11 @@ var data = reader.Read(new MultiFileSource(TrainDataPath));
 var estimator = mlContext.Transforms.CustomMapping<MyInput, MyOutput>(MyLambda.MyAction, "MyLambda")
     .Append(mlContext.Transforms.Text.FeaturizeText("Message", "Features"))
     .Append(mlContext.BinaryClassification.Trainers.StochasticDualCoordinateAscent());
-
-}
 ```
 
-### 2. Evaluate model
+### 2. 评估模型
 
-For this dataset, we will use [cross-validation](https://en.wikipedia.org/wiki/Cross-validation_(statistics)) to evaluate our model. This will partition the data into 5 'folds', train 5 models (on each combination of 4 folds), and test them on the fold that wasn't used in training.
+对于这个数据集，我们将使用[交叉验证](https://en.wikipedia.org/wiki/Cross-validation_(statistics))来评估我们的模型。将数据集划分成5个不相交的子集，训练5个模型（每个模型使用其中4个子集），并在训练中没有使用的数据子集上测试模型。
 
 ```CSharp
 var cvResults = mlContext.BinaryClassification.CrossValidate(data, estimator, numFolds: 5);
@@ -68,18 +66,18 @@ var aucs = cvResults.Select(r => r.metrics.Auc);
 Console.WriteLine("The AUC is {0}", aucs.Average());
 ```
 
-Note that usually we evaluate a model after training it. However, cross-validation includes the model training part so we don't need to do `Fit()` first. However, we will later train the model on the full dataset to take advantage of the additional data.
+请注意，通常我们在训练后评估模型。 但是，交叉验证包括模型训练部分，因此我们不需要先执行`Fit()`。 但是，我们稍后将在完整数据集上训练模型以利用其他数据。
 
-### 3. Train model
-To train the model we will call the estimator's `Fit()` method while providing the full training data.
+### 3. 训练模型
+为了训练模型，我们将调用评估器的`Fit()`方法，同时提供完整的训练数据。
 
 ```CSharp
 var model = estimator.Fit(data);
 ```
 
-### 4. Consume model
+### 4. 使用模型
 
-After the model is trained, you can use the `Predict()` API to predict whether new text is spam. In this case, we change the threshold of the model to get better predictions. We do this because our data is skewed with most messages not being spam.
+训练完模型后，您可以使用`Predict()`API来预测新文本是否垃圾信息。 在这种情况下，我们更改模型的阈值以获得更好的预测。 我们这样做是因为我们的数据有偏差，大多数消息都不是垃圾信息。
 
 ```CSharp
 // The dataset we have is skewed, as there are many more non-spam messages than spam messages.
