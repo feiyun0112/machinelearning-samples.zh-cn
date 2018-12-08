@@ -62,7 +62,7 @@
   </td>
   <td>
       <h4>价格预测 &nbsp;&nbsp;&nbsp;
-      <a href="samples/csharp/getting-started/Regression_TaxiFarePrediction">C#</a> &nbsp; &nbsp; <a href="samples/fsharp/getting-started/Regression_TaxiFarePrediction">F#</a>&nbsp;&nbsp;&nbsp;<img src="images/app-type-getting-started.png" alt="入门图标"></h4>
+      <a href="samples/csharp/getting-started/Regression_TaxiFarePrediction">C#（已翻译）</a> &nbsp; &nbsp; <a href="samples/fsharp/getting-started/Regression_TaxiFarePrediction">F#</a>&nbsp;&nbsp;&nbsp;<img src="images/app-type-getting-started.png" alt="入门图标"></h4>
       <h4>销售预测 &nbsp;&nbsp;&nbsp;
       <a href="samples/csharp/end-to-end-apps/Regression-SalesForecast">C#</a>  &nbsp;&nbsp;&nbsp;<img src="images/app-type-e2e.png" alt="终端应用程序图标"></h4>
       <h4>需求预测 &nbsp;&nbsp;&nbsp;
