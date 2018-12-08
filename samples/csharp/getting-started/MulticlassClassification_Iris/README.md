@@ -85,7 +85,7 @@ public ITransformer Train(IDataView trainingData)
 ```
 ### 3. 评估模型
 我们需要这一步来总结我们的模型对新数据的准确性。 为此，上一步中的模型针对另一个未在训练中使用的数据集（`iris-test.txt`）运行。 此数据集还包含已知的鸢尾花类型。
-`MulticlassClassification.Evaluate`在各种指标中计算模型预测的值和已知类型之间的差异。
+`MulticlassClassification.Evaluate`计算模型预测的值和已知类型之间差异的各种指标。
 ```CSharp
 var metrics = modelBuilder.EvaluateMultiClassClassificationModel(testDataView, "Label");
 Common.ConsoleHelper.PrintMultiClassClassificationMetrics(trainer.ToString(), metrics);
