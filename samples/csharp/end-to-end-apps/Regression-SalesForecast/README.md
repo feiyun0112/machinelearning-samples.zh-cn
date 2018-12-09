@@ -13,9 +13,9 @@ eShopDashboardML是一个使用[ML.NET](https://github.com/dotnet/machinelearnin
 这个终端示例应用程序通过展现以下主题着重介绍ML.NET API的用法:
 
 1. 如何训练，建立和生成ML模型
-   - 使用.NET Core实现一个[控制台应用程序](src\eShopForecastModelsTrainer)。
+   - 使用.NET Core实现一个[控制台应用程序](https://github.com/feiyun0112/machinelearning-samples.zh-cn/blob/master/samples/csharp/end-to-end-apps/Regression-SalesForecast/src%5CeShopForecastModelsTrainer)。
 2. 如何使用经过训练的ML模型做下个月的销售预测
-   - 使用[ASP.NET Core Razor](https://docs.microsoft.com/aspnet/core/tutorials/razor-pages/)实现一个独立的，单体[Web应用程序](src\eShopDashboard)。
+   - 使用[ASP.NET Core Razor](https://docs.microsoft.com/aspnet/core/tutorials/razor-pages/)实现一个独立的，单体[Web应用程序](https://github.com/feiyun0112/machinelearning-samples.zh-cn/blob/master/samples/csharp/end-to-end-apps/Regression-SalesForecast/src%5CeShopDashboard)。
 
 该应用程序还使用一个SQL Server数据库存储常规产品目录和订单信息，就像许多使用SQL Server的典型Web应用程序一样。在本例中，由于它是一个示例，因此默认情况下使用localdb SQL数据库，因此不需要设置真正的SQL Server。在第一次运行Web应用程序时，将创建localdb数据库并包含示例数据。
 
@@ -23,15 +23,15 @@ eShopDashboardML是一个使用[ML.NET](https://github.com/dotnet/machinelearnin
 
 这是Web应用程序的一个销售预测屏幕截图示例：
 
-![image](./docs/images/eShopDashboard.png)
+![image](https://raw.githubusercontent.com/feiyun0112/machinelearning-samples.zh-cn/master/samples/csharp/end-to-end-apps/Regression-SalesForecast/docs/images/eShopDashboard.png)
 
 ## 演练：如何设置
 
 了解如何在 Visual Studio 中设置以及对代码的进一步说明：
 
-- [在 Visual Studio 中设置 eShopDashboard 并运行Web应用程序](docs/Setting-up-eShopDashboard-in-Visual-Studio-and-running-it.md)
+- [在 Visual Studio 中设置 eShopDashboard 并运行Web应用程序](https://github.com/feiyun0112/machinelearning-samples.zh-cn/blob/master/samples/csharp/end-to-end-apps/Regression-SalesForecast/docs/Setting-up-eShopDashboard-in-Visual-Studio-and-running-it.md)
 
-- [创建和训练您的ML模型](docs/Create-and-train-the-models-%5BOptional%5D.md)
+- [创建和训练您的ML模型](https://github.com/feiyun0112/machinelearning-samples.zh-cn/blob/master/samples/csharp/end-to-end-apps/Regression-SalesForecast/docs/Create-and-train-the-models-%5BOptional%5D.md)
   - 此步骤是可选的，因为Web应用程序已配置为使用预先训练的模型。 但是，您可以创建自己的训练模型，并将预先训练的模型与您自己的模型交换。
 
 ## 演练：ML.NET代码实现
@@ -63,13 +63,13 @@ eShopDashboardML是一个使用[ML.NET](https://github.com/dotnet/machinelearnin
 
 当然，当学习/研究此示例时，您可以只关注其中一个场景/模型。
 
-![建立 -> 训练 -> 评估 -> 使用](docs/images/modelpipeline.png)
+![建立 -> 训练 -> 评估 -> 使用](https://raw.githubusercontent.com/feiyun0112/machinelearning-samples.zh-cn/master/samples/csharp/end-to-end-apps/Regression-SalesForecast/docs/images/modelpipeline.png)
 
 #### 1. 建立模型
 
 您需要实现的第一步是定义要从数据集文件加载的数据列，如下面的代码所示：
 
-[建立并训练模型](./src/eShopForecastModelsTrainer/ProductModelHelper.cs)
+[建立并训练模型](https://github.com/feiyun0112/machinelearning-samples.zh-cn/blob/master/samples/csharp/end-to-end-apps/Regression-SalesForecast/src/eShopForecastModelsTrainer/ProductModelHelper.cs)
 
 ```csharp
 var textLoader = mlContext.Data.TextReader(new TextLoader.Arguments
@@ -170,4 +170,10 @@ ProductData dataSample = new ProductData()
 
 //model.Predict() predicts the nextperiod/month forecast to the one provided
 ProductUnitPrediction prediction = predictionFunct.Predict(dataSample);
-Console.WriteLine($"Product: {dataSample.
+Console.WriteLine($"Product: {dataSample.productId}, month: {dataSample.month + 1}, year: {dataSample.year} - Real value (units): 551, Forecast Prediction (units): {prediction.Score}");
+
+```
+
+## 引用
+eShopDashboardML数据集是基于**UCI**(http://archive.ics.uci.edu/ml/datasets/online+retail) 的一个公共在线零售数据集
+> Daqing Chen, Sai Liang Sain, 和 Kun Guo, 在线零售业的数据挖掘: 基于RFM模型的数据挖掘客户细分案例研究, 数据库营销与客户战略管理杂志, Vol. 19, No. 3, pp. 197â€“208, 2012 (印刷前在线发布: 27 August 2012. doi: 10.1057/dbm.2012.17).
