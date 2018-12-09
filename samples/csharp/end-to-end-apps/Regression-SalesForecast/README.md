@@ -99,7 +99,7 @@ var textLoader = mlContext.Data.TextReader(new TextLoader.Arguments
 - 复制“next”列将其重命名为“Label”
 - 指定“Fast Tree Tweedie”训练器作为算法应用于模型
 
-在设计管道之后，您可以将数据集加载到DataView中，而且此步骤只是配置，DataView是延迟加载，在下一步训练模型之前不会加载。
+在设计管道之后，您可以将数据集加载到DataView中，而且此步骤只是配置，DataView是延迟加载，在下一步训练模型之前数据不会被加载。
 
 ```csharp
 var trainingPipeline = mlContext.Transforms.Concatenate(outputColumn: "NumFeatures", "year", "month", "units", "avg", "count", "max", "min", "prev" )
@@ -122,7 +122,7 @@ var model = trainingPipeline.Fit(trainingDataView);
 
 #### 3. 评估模型
 
-在这个案例中，模型的评估是在使用交叉验证方法训练模型之前执行的，因此您将获得指示模型准确度的度量。
+在本例中，模型的评估是在使用交叉验证方法训练模型之前执行的，因此您将获得指示模型准确度的指标。
 
 ```csharp
 var crossValidationResults = mlContext.Regression.CrossValidate(trainingDataView, trainingPipeline, numFolds: 6, labelColumn: "Label");
