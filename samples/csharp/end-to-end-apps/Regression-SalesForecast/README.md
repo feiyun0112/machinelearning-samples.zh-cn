@@ -92,7 +92,7 @@ var textLoader = mlContext.Data.TextReader(new TextLoader.Arguments
 ```
 
 然后，下一步是构建转换管道，并指定要使用什么训练器/算法。
-在这个案例中，您将进行以下转换：
+在本例中，您将进行以下转换：
 - 连接当前特征生成名为NumFeatures的新列
 - 使用[独热编码](https://en.wikipedia.org/wiki/One-hot)转换productId
 - 连接所有生成的特征生成名为'Features'的新列
@@ -170,10 +170,4 @@ ProductData dataSample = new ProductData()
 
 //model.Predict() predicts the nextperiod/month forecast to the one provided
 ProductUnitPrediction prediction = predictionFunct.Predict(dataSample);
-Console.WriteLine($"Product: {dataSample.productId}, month: {dataSample.month + 1}, year: {dataSample.year} - Real value (units): 551, Forecast Prediction (units): {prediction.Score}");
-
-```
-
-## 引用
-eShopDashboardML数据集是基于**UCI**(http://archive.ics.uci.edu/ml/datasets/online+retail) 的一个公共在线零售数据集
-> Daqing Chen, Sai Liang Sain, 和 Kun Guo, 在线零售业的数据挖掘: 基于RFM模型的数据挖掘客户细分案例研究, 数据库营销与客户战略管理杂志, Vol. 19, No. 3, pp. 197â€“208, 2012 (印刷前在线发布: 27 August 2012. doi: 10.1057/dbm.2012.17).
+Console.WriteLine($"Product: {dataSample.
