@@ -1,51 +1,51 @@
-# Movie Recommendation - Matrix Factorization problem sample
+# 电影推荐 - 矩阵分解示例
 
-| ML.NET version | API type          | Status                        | App Type    | Data type | Scenario            | ML Task                   | Algorithms                  |
+| ML.NET 版本 | API 类型          | 状态                        | 应用程序类型    | 数据类型 | 场景            | 机器学习任务                   | 算法                  |
 |----------------|-------------------|-------------------------------|-------------|-----------|---------------------|---------------------------|-----------------------------|
-| v0.7   | Dynamic API | Up-to date | Console app | .csv files | Recommendation | Matrix Factorization | MatrixFactorizationTrainer|
+| v0.7   | 动态 API | 最新版本 | 控制台应用程序 | .csv 文件 | 推荐 | 矩阵分解 | MatrixFactorizationTrainer|
 
-In this sample, you can see how to use ML.NET to build a movie recommendation engine. 
+在这个示例中，您可以看到如何使用ML.NET来构建电影推荐引擎。
 
 
-## Problem
-For this tutorial we will use the MovieLens dataset which comes with movie ratings, titles, genres and more.  In terms of an approach for building our movie recommendation engine we will use Factorization Machines which uses a colloborative filtering approach. 
+## 问题
+在本教程中，我们将使用MovieLens数据集，其中包含电影评分，标题，流派等信息。在构建我们的电影推荐引擎的方法方面，我们将使用分解机，它使用协同过滤方法。
 
-‘Collaborative filtering’ operates under the underlying assumption that if a person A has the same opinion as a person B on an issue, A is more likely to have B’s opinion on a different issue than that of a randomly chosen person. 
+“协同过滤”是在一个基本假设的情况下运作的，即如果某人A在一个问题上与某人B具有相同的意见，则在另一个问题上，相对其他随机选择的人，A更倾向于B的观点。
 
-With ML.NET we support the following three recommendation scenarios, depending upon your scenario you can pick either of the three from the list below. 
+使用ML.NET，我们支持以下三种推荐场景，根据您的场景，您可以从下面的列表中选择三种场景之一。
 
-| Scenario | Algorithm | Link To Sample
+| 场景 | 算法 | 示例链接
 | --- | --- | --- | 
-| You have  UserId, ProductId and Ratings available to you for what users bought and rated.| Matrix Factorization | This sample | 
-| You only have UserId and ProductId's the user bought available to you but not ratings. This is  common in datasets from online stores where you might only have access to purchase history for your customers. With this style of recommendation you can build a recommendation engine which recommends frequently bought items. | One Class Matrix Factorization | Coming Soon | 
-| You want to use more attributes (features) beyond UserId, ProductId and Ratings like Product Description, Product Price etc. for your recommendation engine | Field Aware Factorization Machines | [Movie Recommender with Factorization Machines](https://github.com/dotnet/machinelearning-samples/tree/master/samples/csharp/end-to-end-apps/Recommendation-MovieRecommender/MovieRecommender_Model) | 
+| 你有用户购买行为中的用户Id、产品Id和评分。| 矩阵分解 | 当前示例 | 
+| 你仅有用户购买行为中用户Id和产品Id，但是没有评分。 这在来自在线商店的数据集中很常见，您可能只能访问客户的购买历史记录。 有了这种类型的推荐，你可以建立一个推荐引擎用来推荐经常购买的物品。| One Class 矩阵分解 | [产品推荐器](https://github.com/dotnet/machinelearning-samples/tree/master/samples/csharp/getting-started/MatrixFactorization_ProductRecommendation) | 
+| 您希望在您的推荐引擎中使用用户Id、产品Id和评分之外的更多属性（特征），例如产品描述，产品价格等。 | 场感知分解机  | [基于分解机的电影推荐器](https://github.com/dotnet/machinelearning-samples/tree/master/samples/csharp/end-to-end-apps/Recommendation-MovieRecommender/MovieRecommender_Model) | 
 
 
-## DataSet
-The original data comes from MovieLens Dataset:
+## 数据集
+原始数据来自MovieLens数据集：
 http://files.grouplens.org/datasets/movielens/ml-latest-small.zip
 
-## ML task - [Matrix Factorization (Recommendation)](https://docs.microsoft.com/en-us/dotnet/machine-learning/resources/tasks#recommendation)
+## ML 任务 - [矩阵分解（推荐）](https://docs.microsoft.com/en-us/dotnet/machine-learning/resources/tasks#recommendation)
 
-The ML Task for this sample is Matrix Factorization, which is a supervised machine learning task performing colloborative filtering. 
+这个示例的ML任务是矩阵分解，它是一个执行协同过滤的有监督的机器学习任务。
 
-## Solution
+## 解决方案
 
-To solve this problem, you build and train an ML model on existing training data, evaluate how good it is (analyzing the obtained metrics), and lastly you can consume/test the model to predict the demand given input data variables.
+要解决此问题，您需要在现有训练数据上建立和训练ML模型，评估其有多好（分析获得的指标），最后您可以使用/测试模型来预测给定输入数据变量的需求。
 
-![Build -> Train -> Evaluate -> Consume](../shared_content/modelpipeline.png)
+![建立 -> 训练 -> 评估 -> 使用](../shared_content/modelpipeline.png)
 
-### 1. Build model
+### 1. 建立模型
 
-Building a model includes: 
+建立模型包括: 
 
-* Define the data's schema maped to the datasets to read (`recommendation-ratings-train.csv` and `recommendation-ratings-test.csv`) with a DataReader
+* 定义映射到数据集的数据模式，并使用DataReader读取（`recommended-ratings-train.csv`和`recommended-ratings-test.csv`）
 
-* Matrix Factorization requires the two features userId, movieId to be encoded
+* 矩阵分解需要对userId，movieId这两个特征进行编码
 
-* Matrix Factorization trainer then takes these two encoded features (userId, movieId) as input 
+* 然后MatrixFactorizationTrainer将这两个已编码特征（userId, movieId）作为输入
 
-Here's the code which will be used to build the model:
+下面是用于建立模型的代码：
 ```CSharp
  
  var mlcontext = new MLContext();
@@ -70,20 +70,20 @@ Here's the code which will be used to build the model:
 ```
 
 
-### 2. Train model
-Training the model is a process of running the chosen algorithm on a training data (with known movie and user ratings) to tune the parameters of the model. It is implemented in the `Fit()` method from the Estimator object. 
+### 2. 训练模型
+训练模型是在训练数据（具有已知电影和用户评分）上运行所选算法以调整模型参数的过程。 它是在评估器对象的`Fit()`方法中实现的。
 
-To perform training you need to call the `Fit()` method while providing the training dataset (`recommendation-ratings-train.csv` file) in a DataView object.
+要执行训练，您需要调用`Fit()`方法访问在DataView对象中提供的训练数据集（`recommendation-ratings-train.csv`文件）。
 
 ```CSharp    
 var model = pipeline.Fit(trainingDataView);
 ```
-Note that ML.NET works with data with a lazy-load approach, so in reality no data is really loaded in memory until you actually call the method .Fit().
+请注意，ML.NET使用延迟加载方法处理数据，所以实际上只有调用.Fit()方法时才真正在内存中加载数据。
 
-### 3. Evaluate model
-We need this step to conclude how accurate our model operates on new data. To do so, the model from the previous step is run against another dataset that was not used in training (`recommendation-ratings-test.csv`). 
+### 3. 评估模型
+我们需要这一步来总结我们的模型对新数据的准确性。 为此，上一步中的模型针对未在训练中使用的另一个数据集运行（`recommendation-ratings-test.csv`）。
 
-Evaluate()` compares the predicted values for the test dataset and produces various metrics, such as accuracy, you can explore.
+`Evaluate()` 比较测试数据集的预测值并生成各种指标，例如准确性，您可以进行研究。
 
 ```CSharp 
 Console.WriteLine("=============== Evaluating the model ===============");
@@ -92,8 +92,8 @@ var prediction = model.Transform(testDataView);
 var metrics = mlcontext.Regression.Evaluate(prediction, label: "Label", score: "Score");
 ```
 
-### 4. Consume model
-After the model is trained, you can use the `Predict()` API to predict the rating for a particular movie/user combination. 
+### 4. 使用模型
+训练模型后，您可以使用`Predict()`API来预测特定电影/用户组合的评分。
 ```CSharp    
 var predictionengine = model.MakePredictionFunction<MovieRating, MovieRatingPrediction>(mlcontext);
 var movieratingprediction = predictionengine.Predict(
@@ -108,5 +108,4 @@ var movieratingprediction = predictionengine.Predict(
                    movieService.Get(predictionmovieId).movieTitle + " is:" + Math.Round(movieratingprediction.Score,1));
        
 ```
-Please note this is one approach for performing movie recommendations with Matrix Factorization. There are other scenarios for recommendation as well which we will build samples for as well. 
-
+请注意，这是用矩阵分解进行电影推荐的一种方法。还有其他的推荐方案，我们也将为其建立示例。
