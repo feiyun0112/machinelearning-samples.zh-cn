@@ -1,49 +1,47 @@
 # Movie Recommender 
 
-| ML.NET version | API type          | Status                        | App Type    | Data sources | Scenario            | ML Task                   | Algorithms                  |
+| ML.NET 版本 | API 类型          | 状态                        | 应用程序类型    | 数据类型 | 场景            | 机器学习任务                   | 算法                  |
 |----------------|-------------------|-------------------------------|-------------|-----------|---------------------|---------------------------|-----------------------------|
-|v0.7| Dynamic API | Up-to-date | End-End app | .csv | Movie Recommendation | Recommendation | Field Aware Factorization Machines |
+|v0.7| 动态 API | 需要升级到v0.8 | 终端应用程序 | .csv | 电影推荐 | 建议 | 场感知分解机  |
 
 ![Alt Text](https://github.com/dotnet/machinelearning-samples/blob/master/samples/csharp/end-to-end-apps/Recommendation-MovieRecommender/MovieRecommender/movierecommender/wwwroot/images/movierecommender.gif)
 
-## Overview
+## 概述
 
-MovieRecommender is a simple application which both builds and consumes a recommendation model. 
+MovieRecommender是一个简单的应用程序，它构建和使用推荐模型。
 
-This is an end-end sample on how you can enhance your existing ASP.NET apps with recommendations. 
+这是一个关于如何使用推荐来增强现有ASP.NET应用程序的终端示例。
 
-The sample takes insipiration from the popular Netflix application and even though this sample focuses on movie recommendations, learnings can be easily applied to any style of product recommendations. 
+本示例从流行的Netflix应用程序中汲取了灵感，并且尽管这个示例主要关注电影推荐，但是可以很容易地应用于任何类型的产品推荐。
 
-## Features
-* Wep app 
-    * This is an end-end ASP.NET app which presents three user profiles 'Ankit', 'Cesar', 'Gal'. It then provides these three users 
-      recommendations using a ML.NET recommendation model.   
+## 特点
+* Web应用程序 
+    * 这是一个终端ASP.NET应用程序，它包含了三个用户'Ankit'，'Cesar'，'Gal'。然后，它使用ML.NET推荐模型给这三个用户提供建议。
+      
+* 推荐模型 
+    * 应用程序使用MovieLens数据集构建推荐模型。模型训练代码使用基于协同过滤的推荐方法。
 
-* Recommendation Model 
-    * The application builds a recommendation model using the MovieLens dataset. The model training code shows 
-      uses colloborative filtering based recommendation approach. 
+## 它如何工作？
 
-## How does it work?
+## 训练模型
 
-## Model Training 
+Movie Recommender 使用基于协同过滤的推荐方法。
 
-Movie Recommender uses Colloborative Filtering for recommendations. 
+协同过滤的基本假设是，如果A（例如Gal）在某个问题上与B（例如Cesar）具有相同的观点，则A（Gal）更有可能在另一个问题上具有和B（Cesar）相同的意见，而不是一个随机的人。
 
-The underlying assumption with Colloborative filtering is that if a person A (e.g. Gal) has the same opinion as a person B (e.g. Cesar) on an issue, A (Gal) is more likely to have B’s (Cesar) opinion on a different issue than that of a random person. 
+对于此示例，我们使用 http://files.grouplens.org/datasets/movielens/ml-latest-small.zip 数据集。
 
-For this sample we make use of the http://files.grouplens.org/datasets/movielens/ml-latest-small.zip dataset. 
+模型训练代码可以在[MovieRecommender_Model](https://github.com/dotnet/machinelearning-samples/tree/master/samples/csharp/end-to-end-apps/Recommendation-MovieRecommender/MovieRecommender_Model)中找到。
 
-The model training code can be found in the [MovieRecommender_Model](https://github.com/dotnet/machinelearning-samples/tree/master/samples/csharp/end-to-end-apps/Recommendation-MovieRecommender/MovieRecommender_Model).
-
-Model training follows the following four steps for building the model. You can traverse the code and follow along. 
+模型训练遵循以下四个步骤来构建模型。 您可以先跳过代码并继续。
 
 ![Build -> Train -> Evaluate -> Consume](https://github.com/dotnet/machinelearning-samples/blob/master/samples/csharp/getting-started/shared_content/modelpipeline.png)
 
-## Model Consumption
+## 使用模型
 
-The trained model is consumed in the [Controller](https://github.com/dotnet/machinelearning-samples/blob/master/samples/csharp/end-to-end-apps/Recommendation-MovieRecommender/MovieRecommender/movierecommender/Controllers/MoviesController.cs#L60) using the following steps. 
+通过以下步骤在[Controller](https://github.com/dotnet/machinelearning-samples/blob/master/samples/csharp/end-to-end-apps/Recommendation-MovieRecommender/MovieRecommender/movierecommender/Controllers/MoviesController.cs#L60)中使用训练的模型。
 
-### 1. Create the ML.NET environment and load the already trained model
+### 1. 创建ML.NET环境并加载已经训练过的模型
 
 ```CSharp
 
@@ -56,7 +54,7 @@ The trained model is consumed in the [Controller](https://github.com/dotnet/mach
    loadedModel = ctx.Model.Load(stream);
    }
  ```
-### 2. Create a prediction function to predict a set of movie recommendations 
+### 2. 创建预测函数以预测一组电影推荐
 
 ```CSharp
    //3. Create a prediction function
@@ -86,7 +84,7 @@ The trained model is consumed in the [Controller](https://github.com/dotnet/mach
    }
  ```
 
-### 3. Provide rating predictions to the view to be displayed
+### 3. 为要显示的视图提供评分预测
 
 ```CSharp
    ViewData["watchedmovies"] = WatchedMovies;
@@ -95,14 +93,13 @@ The trained model is consumed in the [Controller](https://github.com/dotnet/mach
    return View(activeprofile);
  ```
 
-## Alternate Approaches 
-This sample shows one of many recommendation approaches that can be used with ML.NET. Depending upon your specific scenario you can choose any of the following approaches which best fit your usecase. 
+## 替代方法 
+这个示例显示了许多可以用于ML.NET的推荐方法之一。根据您的特定场景，您可以选择以下任何最适合您的用例的方法。
 
-| Scenario | Algorithm | Link To Sample
+| 场景 | 算法 | 示例链接
 | --- | --- | --- | 
-| You want to use attributes (features) like UserId, ProductId, Ratings, Product Description, Product Price etc. for your  recommendation engine. In such a scenario Field Aware Factorization Machine is a generalized approach you can use to build your recommendation engine | Field Aware Factorization Machines | This sample | 
-| You have  UserId, ProductId and Ratings available to you for what users bought and rated. For this scenario you should use the Matrix Factorization approach | Matrix Factorization | [Matrix Factorization - Recommendation](https://github.com/dotnet/machinelearning-samples/tree/master/samples/csharp/getting-started/MatrixFactorization_MovieRecommendation)| 
-| You only have UserId and ProductId's the user bought available to you but not ratings. This is  common in datasets from online stores where you might only have access to purchase history for your customers. With this style of recommendation you can build a recommendation engine which recommends frequently bought items. | One Class Matrix Factorization | Coming Soon | 
-
+| 您想使用诸如用户Id、产品Id、评分、产品描述、产品价格等属性（特性）作为推荐引擎。在这种场景中，场感知分解机是一种通用的方法，您可以使用它来构建推荐引擎 | 场感知分解机 | 当前示例 | 
+| 你有用用户购买行为中的户ID，产品和评分。对于这种情况，您应该使用矩阵分解法  | 矩阵分解 | [矩阵分解 - 推荐](https://github.com/dotnet/machinelearning-samples/tree/master/samples/csharp/getting-started/MatrixFactorization_MovieRecommendation)| 
+| 你仅有用户购买行为中用户Id和产品Id，但是没有评分。 这在来自在线商店的数据集中很常见，您可能只能访问客户的购买历史记录。 有了这种类型的推荐，你可以建立一个推荐引擎用来推荐经常购买的物品。 | One Class 矩阵分解 | [Product Recommender](https://github.com/dotnet/machinelearning-samples/tree/master/samples/csharp/getting-started/MatrixFactorization_ProductRecommendation) | 
 
 

@@ -80,7 +80,7 @@
   <td>
       <h4>电影推荐 &nbsp;&nbsp;&nbsp;
         <a href="samples/csharp/getting-started/MatrixFactorization_MovieRecommendation">C#（已翻译）</a> &nbsp;&nbsp;&nbsp;<img src="images/app-type-getting-started.png" alt="入门图标">
-        <a href="samples/csharp/end-to-end-apps/Recommendation-MovieRecommender">C#</a> &nbsp;&nbsp;&nbsp;<img src="images/app-type-e2e.png" alt="终端应用程序图标"> </h4>
+        <a href="samples/csharp/end-to-end-apps/Recommendation-MovieRecommender">C#（已翻译）</a> &nbsp;&nbsp;&nbsp;<img src="images/app-type-e2e.png" alt="终端应用程序图标"> </h4>
        <h4>产品推荐 &nbsp;&nbsp;&nbsp;<a href="samples/csharp/getting-started/MatrixFactorization_ProductRecommendation">C#（已翻译）</a><img src="images/app-type-getting-started.png" alt="Getting started icon"> </h4>
   </td>
  </tr>
