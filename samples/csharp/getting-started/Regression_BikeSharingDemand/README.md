@@ -1,40 +1,36 @@
-# Bike Sharing Demand - Regression problem sample
+# 共享自行车需求 - 回归问题示例
 
-| ML.NET version | API type          | Status                        | App Type    | Data type | Scenario            | ML Task                   | Algorithms                  |
+| ML.NET 版本 | API 类型          | 状态                        | 应用程序类型    | 数据类型 | 场景            | 机器学习任务                   | 算法                  |
 |----------------|-------------------|-------------------------------|-------------|-----------|---------------------|---------------------------|-----------------------------|
-| v0.7-Preview   | Dynamic API | README.md needs update | Console app | .csv files | Demand prediction | Regression | Fast Tree regressor compared to additional regression algorithms|
+| v0.7 | 动态 API |最新版 | 控制台应用程序 | .csv 文件 | 需求预测 | 回归 | Fast Tree 回归器与其他回归算法的比较|
 
-In this sample, you can see how to use ML.NET to predict the demand of bikes. Since you are trying to predict specific numeric values based on past observed data, in machine learning this type of method for prediction is known as regression.
+在这个示例中，您可以看到如何使用ML.NET来预测自行车的需求。由于您试图基于过去的观测数据预测特定的数值，在机器学习中，这种类型的预测方法被称为回归。
 
-**Note**: This sample is being evolving and currently needs to use ML.NET v0.7 (currently in Preview) so you need to use the latest NuGet preview (nightly build) package available at MyGet instead of NuGet.
-The MyGet feed URL you need to configure in Visual Studio is the following:
-https://dotnet.myget.org/F/dotnet-core/api/v3/index.json
+## 问题
 
-## Problem
-
-For a more detailed descritpion of the problem, read the details from the original [
+有关问题的更详细描述，请阅读原始文档中的详细信息 [
 Bike Sharing Demand competition from Kaggle](https://www.kaggle.com/c/bike-sharing-demand).
 
-## DataSet
-The original data comes from a public UCI dataset:
+## 数据集
+原始数据来自公共UCI数据集:
 https://archive.ics.uci.edu/ml/datasets/bike+sharing+dataset
 
 
-## ML task - [Regression](https://docs.microsoft.com/en-us/dotnet/machine-learning/resources/tasks#regression)
+## ML 任务 - [回归](https://docs.microsoft.com/en-us/dotnet/machine-learning/resources/tasks#regression)
 
-The ML Task for this sample is a Regression, which is a supervised machine learning task that is used to predict the value of the label (in this case the demand units prediction) from a set of related features/variables. 
+当前示例的ML任务是回归，它是一种受监督的机器学习任务，用于从一组相关的特征/变量中预测标签的值（在本例中是需求数量预测）。
 
-## Solution
+## 解决方案
 
-To solve this problem, you build and train an ML model on existing training data, evaluate how good it is (analyzing the obtained metrics), and lastly you can consume/test the model to predict the demand given input data variables.
+要解决此问题，您需要在现有训练数据上构建和训练ML模型，评估其有多好（分析获得的指标），最后您可以使用/测试模型来预测给定输入数据变量的需求。
 
 ![Build -> Train -> Evaluate -> Consume](../shared_content/modelpipeline.png)
 
-However, in this example we trains multiple models (instead of a single one), each one based on a different regression learner/algorithm and finally we evaluate the accuracy of each approach/algorithm, so you can choose the trained model with better accuracy.
+然而，在这个例子中，我们训练多个模型（而不是单个模型），每个模型基于不同的回归学习器/算法，最后我们评估每个方法/算法的准确性，因此您可以更精确地选择训练模型。
 
-The following list are the trainers/algorithms used and compared:
+以下列表是使用和比较的训练器/算法：
 
 - Fast Tree
-- SDCA (Stochastic Dual Coordinate Ascent) Regressor
 - Poisson Regressor
-
+- SDCA (Stochastic Dual Coordinate Ascent) Regressor
+- FastTreeTweedie
