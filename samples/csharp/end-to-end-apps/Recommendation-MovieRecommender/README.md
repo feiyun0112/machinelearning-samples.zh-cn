@@ -2,7 +2,7 @@
 
 | ML.NET 版本 | API 类型          | 状态                        | 应用程序类型    | 数据类型 | 场景            | 机器学习任务                   | 算法                  |
 |----------------|-------------------|-------------------------------|-------------|-----------|---------------------|---------------------------|-----------------------------|
-|v0.7| 动态 API | 需要升级到v0.8 | 终端应用程序 | .csv | 电影推荐 | 建议 | 场感知分解机  |
+|v0.7| 动态 API | 需要升级到v0.8 | 终端应用程序 | .csv | 电影推荐 | 推荐 | 场感知分解机  |
 
 ![Alt Text](https://github.com/dotnet/machinelearning-samples/blob/master/samples/csharp/end-to-end-apps/Recommendation-MovieRecommender/MovieRecommender/movierecommender/wwwroot/images/movierecommender.gif)
 
