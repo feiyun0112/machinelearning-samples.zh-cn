@@ -94,7 +94,7 @@
   </td>
   <td>
       <h4>客户细分 &nbsp;&nbsp;&nbsp;
-      <a href="samples/csharp/getting-started/Clustering_CustomerSegmentation">C#</a> &nbsp;&nbsp;&nbsp;<img src="images/app-type-getting-started.png" alt="入门图标"></h4>
+      <a href="samples/csharp/getting-started/Clustering_CustomerSegmentation">C#（已翻译）</a> &nbsp;&nbsp;&nbsp;<img src="images/app-type-getting-started.png" alt="入门图标"></h4>
       <h4>鸢尾花聚类 &nbsp;&nbsp;&nbsp;
       <a href="samples/csharp/getting-started/Clustering_Iris">C#</a> &nbsp; &nbsp; <a href="samples/fsharp/getting-started/Clustering_Iris">F#</a>&nbsp;&nbsp;&nbsp;<img src="images/app-type-getting-started.png" alt="入门图标"></h4>
   </td>

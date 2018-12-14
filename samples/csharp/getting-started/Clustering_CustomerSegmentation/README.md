@@ -1,20 +1,20 @@
-# Customer Segmentation - Clustering sample
+# 客户细分-聚类示例
 
-| ML.NET version | API type          | Status                        | App Type    | Data type | Scenario            | ML Task                   | Algorithms                  |
+| ML.NET 版本 | API 类型          | 状态                        | 应用程序类型    | 数据类型 | 场景            | 机器学习任务                   | 算法                  |
 |----------------|-------------------|-------------------------------|-------------|-----------|---------------------|---------------------------|-----------------------------|
-| v0.6           | Dynamic API | README.md needs update | Console app | .csv files | Customer segmentation | Clustering | K-means++ |
+| v0.7           | 动态 API | 最新版 | 控制台应用程序 | .csv 文件 | 客户细分 | 聚类 | K-means++ |
 
-## Problem
+## 问题
 
-You want to **identify groups of customers with similar profile** so you could target them afterwards (like different marketing campaings per identified customer group with similra characteristics, etc.)
+您想要**识别具有相似概况**的客户组，以便以后对他们准确定位（例如每个具有相似特征的已识别客户组进行不同的营销活动，等等）。
 
-The problem to solve is how you can identify different groups of customers with similar profile and interest without having any pre-existing category list. You are *not* classifying customers across a category list because your customers are not *labeled* so you cannot do that. You just need to make groups/clusters of customers that the company will use afterwards for other business purposes.
+要解决的问题是，如何识别具有相似概况和兴趣的不同客户组，而无需任何预先存在的类别列表。你在分类列表中*不*分类客户，因为你的客户没有被*标记*所以你不能这样做。您只需要建立一组/几组客户，然后公司会将其用于其他业务目的。
 
-## DataSet
+## 数据集
 
-In this hipothetic case, the data to process is coming from 'The Wine Company'. That data is basically a historic of offers/deals (part of marketing campaigns) provided by the company in the past plus the historic of purchases made by customers.
+在当前示例中，要处理的数据来自“The Wine Company”。这些数据基本上是该公司过去提供的报价/交易（营销活动的一部分）的历史记录，加上客户购买的历史记录。
 
-The training dataset is located in the `assets/inputs` folder, and split between two files. The offers file contains information about past marketing campaigns with specific offers/deals:
+训练数据集位于`assets/inputs` 文件夹中，并且拆分成两个文件。优惠文件包含有关特定优惠/优惠的过去营销活动的信息：
 
 |Offer #|Campaign|Varietal|Minimum Qty (kg)|Discount (%)|Origin|Past Peak|
 |-------|--------|--------|----------------|------------|------|---------|
@@ -24,7 +24,7 @@ The training dataset is located in the `assets/inputs` folder, and split between
 |4|February|Champagne|72|48|France|TRUE|
 |5|February|Cabernet Sauvignon|144|44|New Zealand|TRUE|
 
-The transactions file contains information about customer purchases (related to the mentioned offers):
+交易文件包含有关客户购买的信息（与上述优惠相关）：
 
 |Customer Last Name|Offer #|
 |------------------|-------|
@@ -35,39 +35,39 @@ The transactions file contains information about customer purchases (related to 
 |Johnson|26|
 |Williams|18|
 
-This dataset comes from John Foreman's book titled [Data Smart](http://www.john-foreman.com/data-smart-book.html). 
+该数据集来自John Foreman的书籍[Data Smart]（http://www.john-foreman.com/data-smart-book.html）。
 
-## ML Task - [Clustering](https://en.wikipedia.org/wiki/Cluster_analysis)
+## ML 任务 - [聚类](https://en.wikipedia.org/wiki/Cluster_analysis)
 
-The ML task to solve this kind of problem is called **Clustering**.
+解决此类问题的ML任务称为**聚类**。
 
-By applying ML clustering techniques, you will be able to identify similar customers and group them in clusters without having pre-existing categories and historic labeled/categorized data. Clustering is a good way to identify groups of 'related or similar things' without having any pre-existing category list. That is precisely the main difference between *clustering* and *classification*.
+通过应用聚类技术，您将能够识别类似的客户并将他们分组在集群中，而无需预先存在的类别和历史标记/分类数据。聚类是识别一组“相关或类似事物”的好方法，而无需任何预先存在的类别列表。这正是*聚类*和*分类*之间的主要区别。
 
-The algorithm used for this task in this particular sample is *K-Means*. In short, this algorithm assign samples from the dataset to **k** clusters:
-* *K-Means* does not figure out the optimal number of clusters, so this is an algorithm parameter
-* *K-Means* minimizes the distance between each point and the centroid (midpoint) of the cluster
-* All points belonging to the cluster have similar properties (but these properties does not necessarily directly map to the features used for training, and are often objective of further data analysis)
+在当前示例中用于这个任务的算法是*K-Means*。简而言之，该算法将数据集的样本分配给**k**簇：
+* *K-Means* 不计算最佳簇数，因此这是一个算法参数
+* *K-Means* 最小化每个点与群集的质心（中点）之间的距离
+* 属于群集的所有点都具有相似的属性（但这些属性不一定直接映射到用于训练的特征，并且通常是进一步数据分析的目标）
 
-Plotting a chart with the clusters helps you to visually identify what number of clusters works better for your data depending on how well segregated you can identify each cluster. Once you decide on the number of clusters, you can name each cluster with your preferred names and use each customer group/cluster for any business purpose. 
+使用群集绘制图表可帮助您直观地确定哪些群集的数据更适合您的数据，具体取决于您可以识别每个群集的隔离程度。 确定群集数量后，可以使用首选名称命名每个群集，并将每个客户群组/群集用于任何业务目的。
 
-The following picture shows a sample clustered data distribution, and then, how k-Means is able to re-build data clusters.
+下图显示了集群数据分布的示例，然后，k-Means如何能够重新构建数据集群。
 
 ![](./docs/k-means.png)
 
-From the former figure, one question arises: how can we plot a sample formed by different features in a 2 dimensional space? This is a problem called "dimensionality reduction": each sample belongs to a dimensional space formed by each of his features (offer, campaign, etc), so we need a function that "translates" observation from the former space to another space (usually, with much less features, in our case, only two: X and Y). In this case, we will use a common technique called PCA, but there exists similar techniques, like SVD which can be used for the same purpose.
+从上图中可以看出，有一个问题是：我们如何在二维空间中绘制由不同特征形成的样本？ 这是一个被称为“降维”的问题：每个样本属于由他的每个特征（提供，活动等）形成的维度空间，因此我们需要一个将前一个空间的观察“翻译”到另一个空间的功能（通常 在我们的例子中，功能少得多，只有两个：X和Y）。 在这种情况下，我们将使用一种称为PCA的通用技术，但是存在类似的技术，例如可以用于相同目的的SVD。
 
 
-To solve this problem, first we will build an ML model. Then we will train the model on existing data, evaluate how good it is, and finally we'll consume the model to classify customers into clusters.
+要解决这个问题，首先我们将建立一个ML模型。 然后，我们将在现有数据上训练模型，评估其有多好，最后我们将使用该模型将客户分类为集群。
 
 ![](https://raw.githubusercontent.com/dotnet/machinelearning-samples/features/samples-new-api/samples/csharp/getting-started/shared_content/modelpipeline.png)
 
-### 1. Build Model
+### 1. 建立模型
 
-#### Data Pre-Process
+#### 数据预处理
 
-The first thing to do is to join the data into a single view. Because we need to compare transactions made the users, we will build a pivot table, where the rows are the customers and the columns are the campaigns, and the cell value shows if the customer made related transaction during that campaign.
+首先要做的是将数据加入到单个视图中。 因为我们需要比较用户进行的交易，我们将构建一个数据透视表，其中行是客户，列是活动，单元格值显示客户是否在该活动期间进行了相关事务。
 
-The pivot table is built executing the PreProcess function which is this case is implemented by loading the files data in memory and using Linq to join the data. But you could use any other approach depending on the size of your data, such as a relational database or any other approach:
+数据透视表是执行PreProcess函数构建的，在本例中，PreProcess函数是通过将文件数据加载到内存中并使用Linq来join数据实现的。但您可以根据数据的大小使用任何其他方法，例如关系数据库或任何其他方法：
 
 ```csharp
 // inner join datasets
@@ -100,7 +100,7 @@ var pivotDataArray =
       };
 ```
 
-The data is saved into the file `pivot.csv`, and it looks like the following table:
+数据被保存到`pivot.csv`文件中，看起来像下面的表：
 
 |C1|C2|C3|C4|C5|C6|C8|C9|C10|C11|C12|C13|C14|C15|C16|C17|C18|C19|C20|C21|C22|C23|C24|C25|C26|C27|C28|C29|C30|C31|C32|LastName|
 |--|--|--|--|--|--|--|--|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|--------|
@@ -108,12 +108,82 @@ The data is saved into the file `pivot.csv`, and it looks like the following tab
 |1|1|0|0|0|0|0|0|0|0|1|0|0|0|1|0|0|0|0|0|0|1|0|0|0|0|0|0|0|0|0|0|Jackson|
 |1|1|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|Mitchell|
 
-#### Model pipeline
+#### 模型管道
 
-Next, the model's pipeline is built in the method `BuildModel`.
+下面是用于建立模型的代码：
 ```csharp
-// Reading file
- var reader = new TextLoader(env,
+//Create the MLContext to share across components for deterministic results
+MLContext mlContext = new MLContext(seed: 1);  //Seed set to any number so you have a deterministic environment
+
+// STEP 1: Common data loading configuration
+TextLoader textLoader = mlContext.Data.TextReader(new TextLoader.Arguments()
+                        {
+                            Separator = ",",
+                            HasHeader = true,
+                            Column = new[]
+                                        {
+                                        new TextLoader.Column("Features", DataKind.R4, new[] {new TextLoader.Range(0, 31) }),
+                                        new TextLoader.Column("LastName", DataKind.Text, 32)
+                                        }
+                        });
+
+var pivotDataView = textLoader.Read(pivotCsv);
+
+//STEP 2: Configure data transformations in pipeline
+var dataProcessPipeline =  new PrincipalComponentAnalysisEstimator(mlContext, "Features", "PCAFeatures", rank: 2)
+                                .Append(new OneHotEncodingEstimator(mlContext, new[] { new OneHotEncodingEstimator.ColumnInfo("LastName",
+                                                                                                                                "LastNameKey",
+                                                                                                                                OneHotEncodingTransformer.OutputKind.Ind) }));
+
+//STEP 3: Create the training pipeline                
+var trainer = mlContext.Clustering.Trainers.KMeans("Features", clustersCount: 3);
+var trainingPipeline = dataProcessPipeline.Append(trainer);
+
+```
+在本例中， `TextLoader`不显式地定义每一列，而是定义由文件的前32列构成的`Features`属性；并将最后一列的值定义为`LastName`属性。
+
+然后，您需要对数据应用一些转换： 
+
+1) 使用评估器`PrincipalComponentAnalysisEstimator(mlContext, "Features", "PCAFeatures", rank: 2)`添加PCA列，传递参数`rank: 2`，这意味着我们将特征从32维减少到2维（*x*和*y*）
+
+2) 使用`OneHotEncodingEstimator`转换LastName
+
+3) 添加KMeansPlusPlusTrainer; 与该学习器一起使用的主要参数是`clustersCount`，它指定了簇的数量
+
+### 2. 训练模型
+在构建管道之后，我们通过使用所选算法拟合或使用训练数据来训练客户细分模型：
+```csharp
+ITransformer trainedModel = trainingPipeline.Fit(pivotDataView);
+```
+### 3. 评估模型
+我们评估模型的准确性。 使用[ClusteringEvaluator](#)测量此准确度，并显示[Accuracy](https://en.wikipedia.org/wiki/Confusion_matrix)和[AUC](https://loneharoon.wordpress.com/2016/08/17/area-under-the-curve-auc-a-performance-metric/) 指标。
+
+```csharp
+var predictions = trainedModel.Transform(pivotDataView);
+var metrics = mlContext.Clustering.Evaluate(predictions, score: "Score", features: "Features");
+```
+最后，我们使用动态API将模型保存到本地磁盘：
+```csharp
+ //STEP 6: Save/persist the trained model to a .ZIP file
+using (var fs = new FileStream(modelZip, FileMode.Create, FileAccess.Write, FileShare.Write))
+    mlContext.Model.Save(trainedModel, fs);
+```
+#### 运行模型训练
+
+在Visual Studio中打开解决方案后，第一步是创建客户细分模型。 首先将项目`CustomerSegmentation.Train`设置为Visual Studio中的启动项目，然后单击F5。 将打开一个控制台应用程序，它将创建模型（并保存在[assets/output](./src/CustomerSegmentation.Train/assets/outputs/)文件夹中）。 控制台的输出类似于以下屏幕截图：
+
+![](./docs/train_console.png)
+
+### 4. 使用模型
+
+在`CustomerSegmentation.Predict`项目中使用在上一步中创建的模型用于项目“CustomerSegmentation.Predict”。 基本上，我们加载模型，然后加载数据文件，最后我们调用Transform来对数据执行模型。
+
+在本例中，模型不是用来预测任何值（如回归任务）或对任何事物进行分类（如分类任务），而是基于客户的信息构建可能的集群/组。
+
+下面的代码是如何使用模型创建这些集群：
+
+```csharp
+var reader = new TextLoader(_mlContext,
     new TextLoader.Arguments
     {
         Column = new[] {
@@ -124,89 +194,24 @@ Next, the model's pipeline is built in the method `BuildModel`.
         Separator = ","
     });
 
- var estrimator = new PcaEstimator(env, "Features", "PCAFeatures", rank: 2, advancedSettings: (p) => p.Seed = 42)
-    .Append(new CategoricalEstimator(env, new[] { new CategoricalEstimator.ColumnInfo("LastName", "LastNameKey", CategoricalTransform.OutputKind.Ind) }))
-    .Append(new KMeansPlusPlusTrainer(env, "Features", clustersCount: kClusters));
-```
-In this case, `TextLoader` doesn't define explicitly each column, but declares a `Features` property made by the first 30 columns of the file; also declares the property `LastName` to the value of the last column.
+var data = reader.Read(new MultiFileSource(_pivotDataLocation));
 
-Then, you need to apply some transformations to the data:
-1) Add a PCA column, using the `PcaEstimator(env, "Features", "PCAFeatures", rank: 2, advancedSettings: (p) => p.Seed = 42)` Estimator, passing as parameter `rank: 2`, which means that we are reducing the features from 32 to 2 dimensions (*x* and *y*)
-
-2) Add a KMeansPlusPlusTrainer; main parameter to use with this learner is `clustersCount`, that specifies the number of clusters
-
-### 2. Train model
-After building the pipeline, we train the customer segmentation model by fitting or using the training data with the selected algorithm:
-```csharp
- var dataSource = reader.Read(new MultiFileSource(pivotLocation));
- var model = estrimatord.Fit(dataSource);
-```
-### 3. Evaluate model
-We evaluate the accuracy of the model. This accuracy is measured using the [ClusterEvaluator](#), and the [Accuracy](https://en.wikipedia.org/wiki/Confusion_matrix) and [AUC](https://loneharoon.wordpress.com/2016/08/17/area-under-the-curve-auc-a-performance-metric/) metrics are displayed.
-
-```csharp
-// Evaluate model
- var clustering = new ClusteringContext(env);
- var metrics = clustering.Evaluate(data, score: "Score", features: "Features");
-```
-Finally, we save the model to local disk using the dynamic API:
-```csharp
-using (var f = new FileStream(modelLocation, FileMode.Create))
-    model.SaveTo(env, f);
-```
-#### Model training execution
-
-Once you open the solution in Visual Studio, the first step is to create the customer segmentation model. Start by settings the project `CustomerSegmentation.Train` as Startup project in Visual Studio, and then hit F5. A console application will appear and it will create the model (and saved in the [assets/output](./src/CustomerSegmentation.Train/assets/outputs/) folder). The output of the console will look similar to the following screenshot:
-
-![](./docs/train_console.png)
-
-### 4. Consume the model
-
-The model created during last step is used in the project `CustomerSegmentation.Predict`. Basically, we load the model, then the data file and finally we call Transform to execute the model on the data.
-
-In this case, the model is not predicting any value (like a regression task) or cassifying anything (like a classification task) but building possible clusters/groups of customers based on their information.  
-
-The code below is how you use the model to create those clusters:
-
-```csharp
- ITransformer model;
- using (var file = File.OpenRead(modelLocation))
- {
-     model = TransformerChain
-        .LoadFrom(env, file);
- }
-            
- var reader = new TextLoader(env,
-     new TextLoader.Arguments
-     {
-         Column = new[] {
-             new TextLoader.Column("Features", DataKind.R4, new[] {new TextLoader.Range(0, 31) }),
-             new TextLoader.Column("LastName", DataKind.Text, 32)
-         },
-         HasHeader = true,
-         Separator = ","
-     });
-
- ConsoleWriteHeader("Read model");
- Console.WriteLine($"Model location: {modelLocation}");
- var data = reader.Read(new MultiFileSource(pivotDataLocation));
-
- var predictions = model.Transform(datad)
-                 .AsEnumerable<ClusteringPrediction>(env, false)
-                 .ToArray();
+//Apply data transformation to create predictions/clustering
+var predictions = _trainedModel.Transform(data)
+                .AsEnumerable<ClusteringPrediction>(_mlContext, false)
+                .ToArray();
 ```
 
-Additionally, the method `SaveCustomerSegmentationPlot()` saves an scatter plot drawing the samples in each assigned cluster, using the [OxyPlot](http://www.oxyplot.org/) library.
+此外，方法`SaveCustomerSegmentationPlotChart()`使用[OxyPlot](http://www.oxyplot.org/)库保存绘制每个分配集群中的样本的散点图。
 
-#### Run the model and identify the clusters
+#### 运行模型并识别集群
 
-To run the previous code, set the project `CustomerSegmentation.Predict` as Startup project in Visual Studio and hit F5.
+要运行前面的代码，在Visual Studio中将 `CustomerSegmentation.Predict`项目设置为启动项目，然后点击F5。
 
 ![](./docs/predict_console.png)
 
-After executing the predict console app, a plot will be generated in the assets/output folder, showing the cluster distribution (similar to the following figure):
+在执行预测控制台应用程序之后，将生成绘图到assets/output文件夹中，显示集群分布（类似于下图）：
 
 ![customer segmentation](./docs/customerSegmentation.svg)
 
-In that chart you can identify 3 clusters. In this case, two of them are better differenciated (Cluster 1 in Blue and cluster 2 in Green). However, the cluster number 3 is only partially differenciated and part of the customers are overlapping the cluster number 2, which can also happen with groups of customers.
-
+在该图表中，您可以识别3个群集。 在本例中，其中两个更好地分化（蓝色中的簇1和绿色中的簇2）。 但是，群集号3仅部分区分，部分客户与集群号码2重叠，这也可能发生在客户组中。
