@@ -132,7 +132,7 @@
   深度学习是机器学习的一个子集。深层学习架构，如深度神经网络，通常应用于诸如计算机视觉（目标检测、图像分类、风格转移）、语音识别、自然语言处理和音频识别等领域。
   </td>
   <td>
-      <h4>集成TensorFlow &nbsp;&nbsp;&nbsp;<a href="samples/csharp/getting-started/DeepLearning_ImageClassification_TensorFlow">C#</a> &nbsp;&nbsp;&nbsp;<img src="images/app-type-getting-started.png" alt="入门图标"></h4>
+      <h4>集成TensorFlow &nbsp;&nbsp;&nbsp;<a href="samples/csharp/getting-started/DeepLearning_ImageClassification_TensorFlow">C#（已翻译）</a> &nbsp;&nbsp;&nbsp;<img src="images/app-type-getting-started.png" alt="入门图标"></h4>
       <h4>目标检测 即将推出 &nbsp;&nbsp;&nbsp;<img src="images/app-type-getting-started.png" alt="入门图标"></h4>
       <h4>风格转移  即将推出 &nbsp;&nbsp;&nbsp;<img src="images/app-type-e2e.png" alt="终端应用程序图标"></h4>
       <h4>集成ONNX - 即将推出 &nbsp;&nbsp;&nbsp;<img src="images/app-type-getting-started.png" alt="入门图标"></h4>
