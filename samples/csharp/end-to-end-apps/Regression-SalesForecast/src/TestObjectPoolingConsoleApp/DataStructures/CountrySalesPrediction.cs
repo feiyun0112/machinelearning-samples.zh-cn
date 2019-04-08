@@ -1,15 +1,10 @@
 ﻿
-using Microsoft.Extensions.Configuration;
-using Microsoft.ML;
-using Microsoft.ML.Core.Data;
-using System.IO;
-
-namespace eShopDashboard.Forecast
+namespace TestObjectPoolingConsoleApp.DataStructures
 {
     /// <summary>
     /// This is the output of the scored model, the prediction.
     /// </summary>
-    public class ProductUnitPrediction
+    public class CountrySalesPrediction
     {
         // Below columns are produced by the model's predictor.
         public float Score;

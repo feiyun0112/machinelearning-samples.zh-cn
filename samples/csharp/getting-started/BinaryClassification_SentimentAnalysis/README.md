@@ -2,7 +2,7 @@
 
 | ML.NET 版本 | API 类型          | 状态                        | 应用程序类型    | 数据类型 | 场景            | 机器学习任务                   | 算法                  |
 |----------------|-------------------|-------------------------------|-------------|-----------|---------------------|---------------------------|-----------------------------|
-| v0.7           | 动态API | README.md 已更新 | 控制台应用程序 | .tsv 文件 | 情绪分析 | 二元分类 | 线性分类 |
+| v0.9           | 动态API | README.md 已更新 | 控制台应用程序 | .tsv 文件 | 情绪分析 | 二元分类 | 线性分类 |
 
 在这个介绍性示例中，您将看到如何使用[ML.NET](https://www.microsoft.com/net/./apps/machine-.-and-ai/ml-dotnet)预测客户评论的情绪（积极或消极）。在机器学习领域中，这种类型的预测被称为**二元分类**。
 
@@ -41,7 +41,7 @@
 
 ```CSharp
 // STEP 1: Common data loading configuration
-TextLoader textLoader = mlContext.Data.TextReader(new TextLoader.Arguments()
+TextLoader textLoader = mlContext.Data.CreateTextReader(new TextLoader.Arguments()
                                         {
                                             Separator = "tab",
                                             HasHeader = true,
@@ -80,10 +80,11 @@ ITransformer trainedModel = trainingPipeline.Fit(trainingDataView);
 `Evaluate()`比较测试数据集的预测值，并生成各种指标，例如准确性，您可以对其进行探究。 
 
 ```CSharp
-var predictions = trainedModel.Transform(testDataView);
-var metrics = mlContext.BinaryClassification.Evaluate(predictions, "Label", "Score");
+// Create prediction engine related to the loaded trained model
+var predEngine= trainedModel.CreatePredictionEngine<SentimentIssue, SentimentPrediction>(mlContext);
 
-ConsoleHelper.PrintBinaryClassificationMetrics(trainer.ToString(), metrics);
+//Score
+var resultprediction = predEngine.Predict(sampleStatement);
 ```
 
 如果您对模型的质量不满意，可以通过提供更大的训练数据集，并为每个算法选择具有不同超参数的不同训练算法来尝试改进它。

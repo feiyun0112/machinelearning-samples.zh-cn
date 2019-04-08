@@ -1,12 +1,5 @@
-﻿using Microsoft.ML.Core.Data;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
-using Microsoft.ML;
-using Microsoft.Extensions.Configuration;
-
-namespace eShopDashboard.Forecast
+﻿
+namespace TestObjectPoolingConsoleApp.DataStructures
 {
     /// <summary>
     /// This is the input to the trained model.

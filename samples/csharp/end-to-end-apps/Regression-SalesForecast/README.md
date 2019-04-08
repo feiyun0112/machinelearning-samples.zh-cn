@@ -2,7 +2,7 @@
 
 | ML.NET 版本 | API 类型          | 状态                        | 应用程序类型    | 数据类型 | 场景            | 机器学习任务                   | 算法                  |
 |----------------|-------------------|-------------------------------|-------------|-----------|---------------------|---------------------------|-----------------------------|
-| v0.7           | 动态 API | 最新版本 | ASP.NET Core Web应用程序和控制台应用程序 | SQL Server 和 .csv 文件 | 销售预测  | 回归 | FastTreeTweedie 回归 |
+| v0.9           | 动态 API | 最新版本 | ASP.NET Core Web应用程序和控制台应用程序 | SQL Server 和 .csv 文件 | 销售预测  | 回归 | FastTreeTweedie 回归 |
 
 
 eShopDashboardML是一个使用[ML.NET](https://github.com/dotnet/machinelearning) 进行（每个产品和每个地区）销售预测的Web应用程序。
@@ -72,9 +72,8 @@ eShopDashboardML是一个使用[ML.NET](https://github.com/dotnet/machinelearnin
 [建立并训练模型](https://github.com/feiyun0112/machinelearning-samples.zh-cn/blob/master/samples/csharp/end-to-end-apps/Regression-SalesForecast/src/eShopForecastModelsTrainer/ProductModelHelper.cs)
 
 ```csharp
-var textLoader = mlContext.Data.TextReader(new TextLoader.Arguments
-                        {
-                            Column = new[] {
+TextLoader textLoader = mlContext.Data.CreateTextReader(
+                            columns: new[] {
                                 new TextLoader.Column("next", DataKind.R4, 0 ),
                                 new TextLoader.Column("productId", DataKind.Text, 1 ),
                                 new TextLoader.Column("year", DataKind.R4, 2 ),
@@ -86,9 +85,8 @@ var textLoader = mlContext.Data.TextReader(new TextLoader.Arguments
                                 new TextLoader.Column("min", DataKind.R4, 8 ),
                                 new TextLoader.Column("prev", DataKind.R4, 9 )
                             },
-                            HasHeader = true,
-                            Separator = ","
-                        });
+                            hasHeader:true,
+                            separatorChar:',');
 ```
 
 然后，下一步是构建转换管道，并指定要使用什么训练器/算法。
@@ -111,16 +109,7 @@ var trainingPipeline = mlContext.Transforms.Concatenate(outputColumn: "NumFeatur
 var trainingDataView = textLoader.Read(dataPath);
 ```
 
-
-#### 2. 训练模型
-
-在建立管道之后，我们通过使用所选算法拟合或使用训练数据来训练预测模型。 在该步骤中，模型被建立，训练并作为对象返回：
-
-```csharp
-var model = trainingPipeline.Fit(trainingDataView);
-```
-
-#### 3. 评估模型
+#### 2. 使用交叉验证评估模型
 
 在本例中，模型的评估是在使用交叉验证方法训练模型之前执行的，因此您将获得指示模型准确度的指标。
 
@@ -128,6 +117,13 @@ var model = trainingPipeline.Fit(trainingDataView);
 var crossValidationResults = mlContext.Regression.CrossValidate(trainingDataView, trainingPipeline, numFolds: 6, labelColumn: "Label");
             
 ConsoleHelper.PrintRegressionFoldsAverageMetrics(trainer.ToString(), crossValidationResults);
+```
+#### 3. 训练模型
+
+在建立管道之后，我们通过使用所选算法拟合或使用训练数据来训练预测模型。 在该步骤中，模型被建立，训练并作为对象返回：
+
+```csharp
+var model = trainingPipeline.Fit(trainingDataView);
 ```
 
 #### 4. 保存模型供最终用户的应用程序稍后使用
@@ -150,7 +146,7 @@ using (var stream = File.OpenRead(outputModelPath))
     trainedModel = mlContext.Model.Load(stream);
 }
 
-var predictionFunct = trainedModel.MakePredictionFunction<ProductData, ProductUnitPrediction>(mlContext);
+var predictionEngine = trainedModel.CreatePredictionEngine<ProductData, ProductUnitPrediction>(mlContext);
 
 Console.WriteLine("** Testing Product 1 **");
 
@@ -168,8 +164,8 @@ ProductData dataSample = new ProductData()
     units = 910
 };
 
-//model.Predict() predicts the nextperiod/month forecast to the one provided
-ProductUnitPrediction prediction = predictionFunct.Predict(dataSample);
+// Predict the nextperiod/month forecast to the one provided
+ProductUnitPrediction prediction = predictionEngine.Predict(dataSample);
 Console.WriteLine($"Product: {dataSample.productId}, month: {dataSample.month + 1}, year: {dataSample.year} - Real value (units): 551, Forecast Prediction (units): {prediction.Score}");
 
 ```
