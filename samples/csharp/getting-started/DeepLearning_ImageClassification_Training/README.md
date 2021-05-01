@@ -1,29 +1,30 @@
-# Image Classification Model Training - Preferred API (Based on native TensorFlow transfer learning)
+# 图像分类模型训练-首选API（基于原生TensorFlow迁移学习）
 
-| ML.NET version | API type          | Status                        | App Type    | Data type | Scenario            | ML Task                   | Algorithms                  |
+| ML.NET 版本 | API 类型          | 状态                        | 应用程序类型    | 数据类型	 | 场景            | 机器学习任务                   | 算法                  |
 |----------------|-------------------|-------------------------------|-------------|-----------|---------------------|---------------------------|-----------------------------|
-| Microsoft.ML 1.5.0 | Dynamic API | Up-to-date | Console apps and Web App | Image files | Image classification | Image classification with TensorFlow model retrain based on transfer learning  | DNN architectures: ResNet, InceptionV3, MobileNet, etc.  |
+| Microsoft.ML 1.5.0 | 动态API | 最新 | 控制台应用程序和Web应用程序 | 图片文件 | 图像分类 | 基于迁移学习的TensorFlow模型再训练进行图像分类  | DNN架构：ResNet、InceptionV3、MobileNet等  |
 
-## Problem
-Image classification is a common problem within the Deep Learning subject. This sample shows how to create your own custom image classifier by training your model based on the transfer learning approach which is basically retraining a pre-trained model (architecture such as InceptionV3 or ResNet) so you get a custom model trained on your own images.
+## 问题
+图像分类是深度学习学科中的一个常见问题。此示例演示如何通过基于迁移学习方法训练模型来创建您自己的自定义图像分类器，该方法基本上是重新训练预先训练的模型（如InceptionV3或ResNet架构），这样您就可以在自己的图像上训练自定义模型。
 
-In this sample app you create your own custom image classifier model by natively training a TensorFlow model from ML.NET API with your own images.
+在这个示例应用程序中，您可以创建自己的自定义图像分类器模型，方法是使用自己的图像从ML.NET API本机训练TensorFlow模型。
 
-*Image classifier scenario – Train your own custom deep learning model with ML.NET*
+
+*图像分类器场景–使用ML.NET训练您自己的定制深度学习模型*
 ![](https://devblogs.microsoft.com/dotnet/wp-content/uploads/sites/10/2019/08/image-classifier-scenario.png)
 
 
-## Dataset (Imageset)
+## 数据集（图像集）
 
-> *Image set license*
+> *图像集许可证*
 >
-> This sample's dataset is based on the 'flower_photos imageset' available from Tensorflow at [this URL](http://download.tensorflow.org/example_images/flower_photos.tgz).
-> All images in this archive are licensed under the Creative Commons By-Attribution License, available at:
+> 此示例的数据集基于Tensorflow提供的“flower_photosimageset”，[下载地址](http://download.tensorflow.org/example_images/flower_photos.tgz)。
+> 此存档中的所有图像均获得Creative Commons By Attribution许可证的许可，网址为：
 https://creativecommons.org/licenses/by/2.0/
 >
-> The full license information is provided in the LICENSE.txt file which is included as part of the same image set downloaded as a .zip file.
+> 完整的许可证信息在license.txt文件中提供，该文件包含在作为.zip文件下载的同一图像集中。
 
-The by default imageset being downloaded by the sample has 200 images evenly distributed across 5 flower classes:
+默认情况下，示例下载的imageset有200个图像，平均分布在5个flower类中：
 
     Images --> flower_photos_small_set -->
                |
@@ -37,50 +38,50 @@ The by default imageset being downloaded by the sample has 200 images evenly dis
                |
                tulips
 
-The name of each sub-folder is important because that'll be the name of each class/label the model is going to use to classify the images.
+每个子文件夹的名称很重要，因为它将是模型用于分类图像的每个类/标签的名称。
 
-## ML Task - Image Classification
+## 机器学习任务-图像分类
 
-To solve this problem, first we will build an ML model. Then we will train the model on existing data, evaluate how good it is, and lastly we'll consume the model to classify a new image.
+为了解决这个问题，我们首先要建立一个ML模型。然后我们将在现有数据上训练模型，评估它有多好，最后我们将使用模型对新图像进行分类。
 
 ![](../shared_content/modelpipeline.png)
 
-### 1. Configure the project to use GPU or CPU
+### 1. 将项目配置为使用GPU或CPU
 
-By default this solution uses **CPU** for training and scoring.
-But if your machine has a compatible **GPU** available (basically most NVIDIA GPU graphics cards), you can configure the project to use GPU.
+默认情况下，此解决方案使用**CPU**进行训练和评分。
+但是，如果您的机器有一个兼容的**GPU**可用（基本上大多数NVIDIA GPU显卡），您可以配置该项目使用GPU。
 
-> :warning: Make sure you use the correct versions of the NuGet packages listed below. Other versions might be incompatiple with Nvidia CUDA v10.0
+> :警告：请确保使用下面列出的NuGet包的正确版本。其他版本可能与Nvidia CUDA v10.0不兼容
 
-#### Using CPU for training or inference/scoring
+#### 使用CPU进行训练或推断/评分
 
-When using **CPU**, your project has to reference the following redist library:
+当使用**CPU**时，您的项目必须引用以下redist库：
 
 - `SciSharp.TensorFlow.Redist (1.15.0)` (CPU training)
 
-Sample references screenshot in training project using **CPU**:
+使用**CPU**的训练项目中的示例参考屏幕截图：
 
 ![](https://user-images.githubusercontent.com/1712635/68235892-f15d4e00-ffb8-11e9-98c2-5f318da56c40.png)
 
-#### Using GPU for training or inference/scoring
+#### 使用GPU进行训练或推断/评分
 
-When using **GPU**, your project has to reference the following redist library (*and remove the CPU version reference*):
+使用**GPU**时，项目必须引用以下redist库（*并删除CPU版本引用*）：
 
 - `SciSharp.TensorFlow.Redist-Windows-GPU (1.14.0)` (GPU training on Windows) 
 
 - `SciSharp.TensorFlow.Redist-Linux-GPU (1.14.0)` (GPU training on Linux)
 
-Sample references screenshot in training project using **GPU**:
+使用**GPU**的训练项目中的示例参考屏幕截图：
 
 ![](https://user-images.githubusercontent.com/1712635/68236124-6cbeff80-ffb9-11e9-97e7-afcc1be23960.png)
 
-### 2. Build Model
+### 2. 构建模型
 
-Building the model includes the following steps:
-* Loading the image files (file paths in this case) into an IDataView
-* Image classification using the ImageClassification estimator (high level API)
+构建模型包括以下步骤：
+* 将图像文件（本例中为文件路径）加载到IDataView中
+* 使用ImageClassification评估器进行图像分类（高级API）
 
-Define the schema of data in a class type and refer that type while loading the images from the files folder.
+定义数据架构，并在从files文件夹加载图像时引用该类型。
 
 ```csharp
 public class ImageData
@@ -96,7 +97,7 @@ public class ImageData
 }
 ```
 
-Since the API uses in-memory images so later on you'll be able to score the model with in-memory images, you need to define a class containing the image's bits in the type `byte[] Image`, like the following:
+由于API使用内存图像，因此稍后您可以使用内存图像对模型进行评分，因此需要定义一个包含“byte[]image”类型中图像位的类，如下所示：
 
 ```csharp
 public class InMemoryImageData
@@ -114,7 +115,7 @@ public class InMemoryImageData
 }
 ```
 
-Download the imageset and load its information by using the LoadImagesFromDirectory() and LoadFromEnumerable().
+使用LoadImagesFromDirectory（）和LoadFromEnumerable（）下载imageset并加载其信息。
 
 ```csharp
 // 1. Download the image set and unzip
@@ -129,10 +130,10 @@ IDataView fullImagesDataset = mlContext.Data.LoadFromEnumerable(images);
 IDataView shuffledFullImageFilePathsDataset = mlContext.Data.ShuffleRows(fullImagesDataset);
 ```
 
-Once it's loaded into the IDataView, the rows are shuffled so the dataset is better balanced before spliting into the training/test datasets.
+将数据加载到IDataView后，将对这些行进行混洗，以便在拆分为训练/测试数据集之前更好地平衡数据集。。
 
-Now, this next step is very important. Since we want the ML model to work with in-memory images, we need to load the images into the dataset and actually do it by calling fit() and transform().
-This step needs to be done in a initial and seggregated pipeline in the first place so the filepaths won't be used by the pipeline and model to create when training.
+下一步非常重要。因为我们希望ML模型能够处理内存中的图像，所以我们需要将图像加载到数据集中，并通过调用fit()和ttransform()来实现。
+需要在初始且分离的管道中执行此步骤，以便在训练时，管道和模型不会使用文件路径来创建。
 
 ```csharp
 // 3. Load Images with in-memory type within the IDataView and Transform Labels to Keys (Categorical)
@@ -146,9 +147,9 @@ IDataView shuffledFullImagesDataset = mlContext.Transforms.Conversion.
     .Transform(shuffledFullImageFilePathsDataset);
 ```
 
-In addition we also transformed the Labels to Keys (Categorical) before splitting the dataset. This is also important to do it before splitting if you don't want to deal/match the KeyOrdinality if transforming the labels in a second pipeline (the training pipeline).
+此外，在分割数据集之前，我们还将标签转换为键（分类）。如果您不想在第二个管道（训练管道）中转换标签时处理/匹配KeyOrdinality，那么在拆分之前执行此操作也很重要。
 
-Now, let's split the dataset in two datasets, one for training and the second for testing/validating the quality of the model.
+现在，让我们将数据集分成两个数据集，一个用于训练，另一个用于测试/验证模型的质量。
 
 ```csharp
 // 4. Split the data 80:20 into train and test sets, train and evaluate.
@@ -157,7 +158,7 @@ IDataView trainDataView = trainTestData.TrainSet;
 IDataView testDataView = trainTestData.TestSet;
 ```
 
-As the most important step, you define the model's training pipeline where you can see how easily you can train a new TensorFlow model which under the covers is based on transfer learning from a by default architecture (pre-trained model) such as *Resnet V2 500*.
+作为最重要的步骤，您可以定义模型的训练管道，在这里您可以看到如何轻松地训练一个新的TensorFlow模型，该模型基于默认体系结构（预先训练的模型）的迁移学习，例如*Resnet V2 500*。
 
 ```csharp
 // 5. Define the model's training pipeline using DNN default values
@@ -171,17 +172,17 @@ var pipeline = mlContext.MulticlassClassification.Trainers
 
 ```
 
-The important line in the above code is the line using the `mlContext.MulticlassClassification.Trainers.ImageClassification` classifier trainer which as you can see is a high level API where you just need to provide which column has the images, the column with the labels (column to predict) and a validation dataset to calculate quality metrics while training so the model can tune itself (change internal hyper-parameters) while training.
+上面代码中的重要一行是使用`mlContext.MulticlassClassification.Trainers.ImageClassification`分类训练器的行，正如您所看到的，这是一个高级API，您只需要提供哪个列包含图像，带有标签的列（要预测的列）和用于在训练时计算质量度量的验证数据集，以便模型在训练时可以自我调整（更改内部超参数）。
 
-Under the covers this model training is based on a native TensorFlow DNN transfer learning from a default architecture (pre-trained model) such as *Resnet V2 50*. You can also select the one you want to derive from by configuring the optional hyper-parameters.
+在本质上，此模型训练基于从默认体系结构（预先训练的模型）学习的本地TensorFlow DNN迁移，例如*Resnet V2 50*。还可以通过配置可选的超参数来选择要从中派生的超参数。
 
-It is that simple, you don't even need to make image transformations (resize, normalizations, etc.). Depending on the used DNN architecture, the framework is doing the required image transformations under the covers so you simply need to use that single API.
+就这么简单，您甚至不需要进行图像变换（调整大小、规格化等）。根据所使用的DNN架构，该框架在幕后进行所需的图像转换，因此您只需使用单个API即可。
 
-#### Optional use of advanced hyper-parameters
+#### 可选使用高级超参数
 
-There’s another overloaded method for advanced users where you can also specify those optional hyper-parameters such as epochs, batchSize, learningRate, a specific DNN architecture such as [Inception v3](https://cloud.google.com/tpu/docs/inception-v3-advanced) or [Resnet v2101](https://medium.com/@bakiiii/microsoft-presents-deep-residual-networks-d0ebd3fe5887) and other typical DNN parameters, but most users can get started with the simplified API.
+高级用户还有另一种重载方法，您还可以指定可选的超参数，例如epoch，batchSize，learningRate，特定的DNN架构，例如[Inception v3](https://cloud.google.com/tpu/docs/inception-v3-advanced)或者[Resnet v2101](https://medium.com/@bakiiii/microsoft-presents-deep-residual-networks-d0ebd3fe5887)和其他典型的DNN参数，但大多数用户都可以从简化的API开始。
 
-The following is how you use the advanced DNN parameters:
+以下是如何使用高级DNN参数：
 
 ```csharp
 // 5.1 (OPTIONAL) Define the model's training pipeline by using explicit hyper-parameters
@@ -206,19 +207,19 @@ var pipeline = mlContext.MulticlassClassification.Trainers.ImageClassification(o
             inputColumnName: "PredictedLabel"));
 ```
 
-### 3. Train model
-In order to begin the training process you run `Fit` on the built pipeline:
+### 3. 训练模型
+为了开始训练过程，您需要在构建的管道上运行`Fit`：
 
 ```csharp
 // 4. Train/create the ML model
 ITransformer trainedModel = pipeline.Fit(trainDataView);
 ```
 
-### 4. Evaluate model
+### 4. 评估模型
 
-After the training, we evaluate the model's quality by using the test dataset.
+训练完成后，利用测试数据集对模型进行质量评价。
 
-The `Evaluate` function needs an `IDataView` with the predictions generated from the test dataset by calling Transfor().
+`Evaluate`函数需要一个`IDataView`，其中包含通过调用Transform()从测试数据集生成的预测。
 
 ```csharp
 // 5. Get the quality metrics (accuracy, etc.)
@@ -228,45 +229,45 @@ var metrics = mlContext.MulticlassClassification.Evaluate(predictionsDataView, l
 ConsoleHelper.PrintMultiClassClassificationMetrics("TensorFlow DNN Transfer Learning", metrics);
 ```
 
-Finally, you save the model:
+最后，保存模型：
 ```csharp
 // Save the model to assets/outputs (You get ML.NET .zip model file and TensorFlow .pb model file)
 mlContext.Model.Save(trainedModel, trainDataView.Schema, outputMlNetModelFilePath);
 ```
 
-#### Run the project to train the model
+#### 运行项目来训练模型
 
-You should proceed as follows in order to train a model your model:
-1) Set `ImageClassification.Train` as starting project in Visual Studio
-2) Press F5 in Visual Studio. After some seconds, the process will finish and you should have a new ML.NET model saved as the file `assets/outputs/imageClassifier.zip`
+您应该按照以下步骤来训练您的模型：
+1) 在Visual Studio中将`ImageClassification.Train`设置为启动项目
+2) 在Visual Studio中按F5。几秒钟后，该过程将完成并保存一个新的ML.NET模型到文件`assets/outputs/imageClassifier.zip`
 
-### 5. Consume model in "end-user" application
+### 5. “终端用户”应用中的使用模型
 
-#### GPU vs. CPU for consuming/scoring the model
+#### GPU与CPU对模型的使用/评分对比
 
-When consuming/scoring the model you can also choose between CPU/GPU, however, if using GPU you also need to make sure that the machine/server running the model supports a GPU.
+在使用/评分模型时，您也可以在CPU/GPU之间进行选择，但是，如果使用GPU，您还需要确保运行模型的计算机/服务器支持GPU。
 
-The way you set up the scoring/consumption project to use GPU is the same way explained at the begining of this readme.md by simply using one or the other redist library.
+设置评分/使用项目以使用GPU的方法与本readme.md开头所述的方法相同，只需使用一个或另一个redist库。
 
-#### Sample Console app for scoring
+#### 用于评分的示例控制台应用程序
 
-In the sample's solution there's a second project named *ImageClassifcation.Predict*. That console app is simply loading your custom trained ML.NET model and performing a few sample predictions the same way a hypothetical end-user app could do.
+在示例的解决方案中，还有第二个项目名为*ImageClassifcation.Predict*。这个控制台应用程序只需加载您定制的ML.NET模型，并以假设的最终用户应用程序的方式执行一些样本预测。
 
-First thing to do is to copy/paste the generated `assets/outputs/imageClassifier.zip` file into the *inputs/MLNETModel* folder of the consumption project.
+首先要做的是将生成的`assets/outputs/imageClassifier.zip`文件复制/粘贴到使用项目的*inputs/MLNETModel*文件夹中。
 
-In regards the code, you first need to load the model created during model training app execution.
+关于代码，您首先需要加载在模型训练应用执行期间创建的模型。
 
 ```csharp
 MLContext mlContext = new MLContext(seed: 1);
 ITransformer loadedModel = mlContext.Model.Load(imageClassifierModelZipFilePath, out var modelInputSchema);
 ```
 
-Then, your create a predictor engine object and finally make a few sample predictions by using the first image of the folder `assets/inputs/images-for-predictions` which has just a few images that were not used when training the model.
+然后，您可以创建一个预测器引擎对象，并最终使用文件夹`assets/inputs/images-for-predictions`的第一个图像进行一些样本预测，其中只有一些图像在训练模型时没有使用。
 
-Note that now, when scoring, you only need the `InMemoryImageData` type which has the in-memory image.
+请注意，在评分时，只需要具有内存图像的`InMemoryImageData`类型。
 
-That image could also be coming thorugh any other channel instead of loading it from a file.
-For instance, the `ImageClassification.WebApp` in this same solution gets the image to use for the prediction through HTTP as an image provided by an end-user.
+该图像也可以通过任何其他通道传输，而不是从文件中加载。
+例如，这个解决方案中的`ImageClassification.WebApp`通过HTTP获取将要用于预测的图像。
 
 ```csharp
 var predictionEngine = mlContext.Model.CreatePredictionEngine<InMemoryImageData, ImagePrediction>(loadedModel);
@@ -292,51 +293,53 @@ Console.WriteLine($"Image Filename : [{imageToPredict.ImageFileName}], " +
                     );
 ```
 
-The prediction engine receives as parameter an object of type `InMemoryImageData` (containing 2 properties: `Image` and `ImageFileName`).
-The ImageFileName is not used byt the model. You simple have it there so you can print the filename out out when showing the prediction. The prediction is only using the image's bits in the `byte[] Image` field.
+预测引擎接收`InMemoryImageData`类型的对象作为参数（包含2个属性：`Image`和`ImageFileName`）。
+该模型不使用ImageFileName。 您只需将它放在这里，以便在显示预测时可以将文件名打印出来。 预测仅使用`byte[] Image`字段中的图像位。
 
-Then the model returns and object of type `ImagePrediction`, which holds the `PredictedLabel` and all the `Scores` for all the classes/types of images.
+然后，模型返回类型为`ImagePrediction`的对象，该对象包含所有图像类/类型的`PredictedLabel`和所有`Scores`。
 
-Since the `PredictedLabel` is already a string it'll be shown in the console.
-About the score for the predicted label, we just need to take the highest score which is the probability for the predicted label.
+由于`PredictedLabel`已经是一个字符串，因此它将显示在控制台中。
+关于预测标签的分数，我们只需要取最高的分数，即预测标签的概率。
 
-#### Run the "end-user-app" project to try predictions
+#### 运行“最终用户应用程序”项目以尝试预测
 
-You should proceed as follows in order to train a model your model:
+您应该按照以下步骤来使用您的模型：
 
-1) Set `ImageClassification.Predict` as starting project in Visual Studio
-2) Press F5 in Visual Studio. After some seconds, the process will show you predictions by loading and using your custom `imageClassifier.zip` model.
+1) 在Visual Studio中将“ImageClassification.Predict”设置为启动项目
+2) 在Visual Studio中按F5。几秒钟后，该过程将通过加载并使用自定义的`imageClassifier.zip` 模型来显示预测。
 
-#### Sample ASP.NET Core web app for scoring/inference
+#### 用于评分/推断的ASP.NET Core web应用示例
 
-In the sample's solution there's another project named *ImageClassification.WebApp* which is an ASP.NET Core web app that allows the user to submit an image through HTTP and score/predict with that in-memory image.
+在示例的解决方案中，还有另一个名为*ImageClassification.WebApp*的项目，它是一个ASP.NET Core web应用程序，允许用户通过HTTP提交图像，并使用内存中的图像进行评分/预测。
 
-This sample also uses the `PredictionEnginePool` which is recommended for multi-threaded and scalable applications.
+此示例还使用了`PredictionEnginePool`，建议用于多线程和可扩展的应用程序。
 
-Below you can see an screenshot of the app:
+您可以在下面看到该应用的屏幕截图：
 
 ![](https://user-images.githubusercontent.com/1712635/68236862-d4c21580-ffba-11e9-9c77-340640d3a70c.png)
 
 
-# TensorFlow DNN Transfer Learning background information
+# TensorFlow DNN迁移学习背景信息
 
-This sample app is retraining a TensorFlow model for image classification. As a user, you could think it is pretty similar to this other sample [Image classifier using the TensorFlow Estimator featurizer](https://github.com/dotnet/machinelearning-samples/tree/main/samples/csharp/getting-started/DeepLearning_TensorFlowEstimator). However, the internal implementation is very different under the covers. In that mentioned sample, it is using a 'model composition approach' where an initial TensorFlow model (i.e. InceptionV3 or ResNet) is only used to featurize the images and produce the binary information per image to be used by another ML.NET classifier trainer added on top (such as `LbfgsMaximumEntropy`). Therefore, even when that sample is using a TensorFlow model, you are training only with a ML.NET trainer, you don't retrain a new TensorFlow model but train an ML.NET model. That's why the output of that sample is only an ML.NET model (.zip file).
+这个示例应用程序正在重新训练用于图像分类的TensorFlow模型。您可能认为它与另一个示例非常相似 [Image classifier using the TensorFlow Estimator featurizer](https://github.com/dotnet/machinelearning-samples/tree/main/samples/csharp/getting-started/DeepLearning_TensorFlowEstimator)。 不过，内部的实现方式却有很大的不同。在上述示例中，它使用的是“模型合成方法”，其中初始TensorFlow模型（即InceptionV3或ResNet）仅用于对图像进行特征化，并生成每个图像的二进制信息，以供添加在顶部的另一个ML.NET分类器训练器使用（例如`LbfgsMaximumEntropy`）。因此，即使该示例使用的是TensorFlow模型，您也只能使用ML.NET trainer进行训练，您不会重新训练新的TensorFlow模型，而是训练ML.NET模型。这就是为什么该示例的输出只是一个ML.NET模型（.zip文件）。
 
-In contrast, this sample is natively retraining a new TensorFlow model based on a Transfer Learning approach but training a new TensorFlow model derived from the specified pre-trained model (Inception V3 or ResNet).
+与此相反，本例在本地基于迁移学习方法对新的TensorFlow模型进行重新训练，再从指定的预训练模型（Inception V3或ResNet）派生的新TensorFlow模型进行了训练。
 
-The important difference is that this approach is internally retraining with TensorFlow APIs and creating a new TensorFlow model (.pb). Then, the ML.NET .zip file model you use is just like a wrapper around the new retrained TensorFlow model. This is why you can also see a new .pb file generated after training:
+重要的区别在于，这种方法使用TensorFlowAPI进行内部再训练，并创建一个新的TensorFlow模型（.pb）。然后，您使用的ML.NET.zip文件模型就像是新的重新训练的TensorFlow模型的包装器。这就是为什么您还可以看到训练后生成的新.pb文件的原因：
 
 ![](https://user-images.githubusercontent.com/1712635/64131693-26fa7680-cd7f-11e9-8010-89c60b71fe11.png)
 
-In the screenshot below you can see how you can see that retrained TensorFlow model (`custom_retrained_model_based_on_InceptionV3.meta.pb`) in **Netron**, since it is a native TensorFlow model:
+在下面的屏幕截图中，您可以看到如何在**Netron**中看到重新训练的TensorFlow模型（`custom_retrained_model_based_on_InceptionV3.meta.pb`），因为它是本机TensorFlow模型：
 
 ![](https://user-images.githubusercontent.com/1712635/64131904-9d4ba880-cd80-11e9-96a3-c2f936f8c5e0.png)
 
-**Benefits:**
+**好处:**
 
-- **Train and inference using GPU:**
-    When using this native DNN approach based on TensorFlow you can either use the CPU or GPU (if available) for a better performance (less time needed for training and scoring).
+- **使用GPU进行训练和推断：**
+    当使用基于TensorFlow的本机DNN方法时，您可以使用CPU或GPU（如果可用）来获得更好的性能（减少训练和评分所需的时间）。
 
-- **Reuse across multiple frameworks and platforms:**
-    This ultimately means that since you natively trained a Tensorflow model, in addition to being able to run/consume that model with the ML.NET 'wrapper' model (.zip file), you could also take the .pb TensorFlow frozen model and run it on any other framework such as Python/Keras/TensorFlow, or a Java/Android app or any framework that supports TensorFlow.
-- **Flexibility and performace:** Since ML.NET is internally retraining natively on Tensorflow layers, the ML.NET team will be able to optimize further and take multiple approaches like training on the last layer or training on multiple layers across the TensorFlow model and achive better quality levels.
+- **跨多个框架和平台重用：**
+    由于您本机训练了Tensorflow模型，除了能够使用ML.NET 'wrapper'模型（.zip文件）运行/使用该模型之外，您还可以使用.pb Tensorflow冻结模型并在任何其他框架（如Python/Keras/Tensorflow）上运行它，或者Java/Android应用程序或任何支持TensorFlow的框架。
+    
+- **灵活性和性能：** 
+    由于ML.NET是在Tensorflow层上进行内部再训练的，因此ML.NET团队将能够进一步优化并采取多种方法，如在最后一层上进行训练或跨Tensorflow模型在多个层上进行训练，并获得更好的质量水平。
