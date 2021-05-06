@@ -1,65 +1,65 @@
-# Object Detection
+# 目标检测
 
-| ML.NET version | API type          | Status                        | App Type    | Data type | Scenario            | ML Task                   | Algorithms                  |
+| ML.NET 版本 | API 类型          | 状态                        | 应用程序类型    | 数据类型 | 场景            | 机器学习任务                   | 算法                  |
 |----------------|-------------------|-------------------------------|-------------|-----------|---------------------|---------------------------|-----------------------------|
-| v1.4           | Dynamic API | Up-to-date | Console app | image files | Object Detection | Deep Learning  | Tiny Yolo2 ONNX model |
+| v1.4           | 动态API | 最新 | 控制台应用程序 | 图像文件 | 目标检测 | 深度学习  | Tiny Yolo2 ONNX 模型 |
 
 
-For a detailed explanation of how to build this application, see the accompanying [tutorial](https://docs.microsoft.com/en-us/dotnet/machine-learning/tutorials/object-detection-onnx) on the Microsoft Docs site. 
+有关如何构建此应用程序的详细说明，请参阅Microsoft Docs网站上附带的[教程](https://docs.microsoft.com/en-us/dotnet/machine-learning/tutorials/object-detection-onnx)。
 
-## Problem 
-Object detection is one of the classical problems in computer vision: Recognize what the objects are inside a given image and also where they are in the image. For these cases, you can either use pre-trained models or train your own model to classify images specific to your custom domain. 
+## 问题 
+目标检测是计算机视觉中的一个经典问题：识别给定图像中的目标以及它们在图像中的位置。对于这些情况，您可以使用预先训练的模型，也可以训练自己的模型来对特定于自定义域的图像进行分类。
 
  
-## DataSet
-The dataset contains images which are located in the [assets](./ObjectDetectionConsoleApp/assets/images) folder. These images are taken from [wikimedia commons site](https://commons.wikimedia.org/wiki/Main_Page). Go to [Wikimediacommon.md](./ObjectDetectionConsoleApp/assets/images/wikimedia.md) to refer to the image urls and their licenses.
+## 数据集
+数据集包含位于[assets](./ObjectDetectionConsoleApp/assets/images)文件夹中的图像。这些图片来自[wikimedia commons网站](https://commons.wikimedia.org/wiki/Main_Page)。 转到[wikimediacomon.md]（./ObjectDetectionConsoleApp/assets/images/wikimedia.md）查看图像URL及其许可证。
 
-## Pre-trained model
-There are multiple models which are pre-trained for identifying multiple objects in the images. here we are using the pretrained model, **Tiny Yolo2** in  **ONNX** format. This model is a real-time neural network for object detection that detects 20 different classes. It is made up of 9 convolutional layers and 6 max-pooling layers and is a smaller version of the more complex full [YOLOv2](https://pjreddie.com/darknet/yolov2/) network.
+## 预训练模型
+有多个预先训练的模型来识别图像中的多个对象。这里我们使用的是预训练模型，**Tiny Yolo2**，格式为**ONNX**。该模型是一个用于目标检测的实时神经网络，可以检测20个不同的类别。它由9个卷积层和6个最大池层组成，是更复杂的full[YOLOv2]的较小版本(https://pjreddie.com/darknet/yolov2/)网络。
 
-The Open Neural Network Exchange i.e [ONNX](http://onnx.ai/) is an open format to represent deep learning models. With ONNX, developers can move models between state-of-the-art tools and choose the combination that is best for them. ONNX is developed and supported by a community of partners.
+开放式神经网络交换即[ONNX](http://onnx.ai/)是一种表示深度学习模型的开放格式。使用ONNX，开发人员可以在最先进的工具之间移动模型，并选择最适合他们的组合。ONNX是由一个合作伙伴社区开发和支持的。
 
-The model is downloaded from the [ONNX Model Zoo](https://github.com/onnx/models) which is a is a collection of pre-trained, state-of-the-art models in the ONNX format.
+模型从[ONNX Model Zoo](https://github.com/onnx/models) 下载,这是一个预训练的，最先进的模型在ONNX格式的集合。
 
-The Tiny YOLO2 model was trained on the [Pascal VOC](http://host.robots.ox.ac.uk/pascal/VOC/) dataset. Below are the model's prerequisites. 
+Tiny YOLO2模型是在[Pascal VOC](http://host.robots.ox.ac.uk/pascal/VOC/)数据集上训练的(http://host.robots.ox.ac.uk/pascal/VOC/)。以下是模型的先决条件。
 
-**Model input and output**
+**模型输入和输出**
 
-**Input**
+**输入**
 
-Input image of the shape (3x416x416)  
+输入图像的大小 (3x416x416)  
 
-**Output**
+**输出**
 
-Output is a (1x125x13x13) array   
+输出是一个(1x125x13x13)数组   
 
-**Pre-processing steps**
+**预处理步骤**
 
-Resize the input image to a (3x416x416) array of type float32.
+将输入图像调整为float32类型的(3x416x416)数组。
 
-**Post-processing steps**
+**后处理步骤**
 
-The output is a (125x13x13) tensor where 13x13 is the number of grid cells that the image gets divided into. Each grid cell corresponds to 125 channels, made up of the 5 bounding boxes predicted by the grid cell and the 25 data elements that describe each bounding box (5x25=125). For more information on how to derive the final bounding boxes and their corresponding confidence scores, refer to this [post](http://machinethink.net/blog/object-detection-with-yolo/).
+输出是一个（125x13x13）张量，其中13x13是图像被分割成的网格单元数。每个网格单元对应125个通道，由网格单元预测的5个边界框和描述每个边界框的25个数据元素（5x25=125）组成。有关如何导出最终边界框及其相应的置信度分数的更多信息，请参阅[文章](http://machinethink.net/blog/object-detection-with-yolo/)。
 
 
-##  Solution
-The console application project `ObjectDetection` can be used to to identify objects in the sample images based on the **Tiny Yolo2 ONNX** model. 
+##  解决方案
+控制台应用程序项目`ObjectDetection`可用于识别基于**Tiny Yolo2 ONNX**模型的示例图像中的对象。
 
-Again, note that this sample only uses/consumes a pre-trained ONNX model with ML.NET API. Therefore, it does **not** train any ML.NET model. Currently, ML.NET supports only for scoring/detecting with existing ONNX trained models. 
+同样，请注意，此示例仅使用/使用带有ML.NET API的预先训练的ONNX模型。因此，它**不**训练任何ML.NET模型。目前，ML.NET仅支持对现有ONNX训练模型进行评分/检测。
 
-You need to follow next steps in order to execute the classification test:
+为了执行分类测试，您需要执行以下步骤：
 
-1) **Set VS default startup project:** Set `ObjectDetection` as starting project in Visual Studio.
-2)  **Run the training model console app:** Hit F5 in Visual Studio. At the end of the execution, the output will be similar to this screenshot:
+1)  **设置VS默认启动项目：**在Visual Studio中将`ObjectDetection`设置为启动项目。
+2)  **运行training model控制台应用程序：**在Visual Studio中按F5。在执行结束时，输出将类似于此屏幕截图：
 ![image](./docs/Output/Console_output.png)
 
 
-##  Code Walkthrough
-There is a single project in the solution named `ObjectDetection`, which is responsible for loading the model in Tiny Yolo2 ONNX format and then detects objects in the images.
+##  代码演练
+解决方案中有一个名为`ObjectDetection`的项目，负责以 Tiny Yolo2 ONNX格式加载模型，然后检测图像中的对象。
 
-### ML.NET: Model Scoring
+### ML.NET：模型评分
 
-Define the schema of data in a class type and refer that type while loading data using TextLoader. Here the class type is **ImageNetData**. 
+定义类中的数据架构，并在使用TextLoader加载数据时引用该类型。这里的类是**ImageNetData**。
 
 ```csharp
 public class ImageNetData
@@ -80,19 +80,19 @@ public class ImageNetData
 }
 ```
 
-### ML.NET: Configure the model
+### ML.NET:配置模型
 
-The first step is to create an empty dataview as we just need schema of data while configuring up model.
+第一步是创建一个空的数据视图，因为我们在配置模型时只需要数据模式。
 
 ```csharp
 var data = mlContext.Data.LoadFromTextFile<ImageNetData>(imagesLocation, hasHeader: true);
 ```
 
-The image file used to load images has two columns: the first one is defined as `ImagePath` and the second one is the `Label` corresponding to the image. 
+用于加载图像的图像文件有两列：第一列定义为`ImagePath`，第二列定义为与图像对应的`Label`。
 
-It is important to highlight that the `Label` in the `ImageNetData` class is not really used when scoring with the Tiny Yolo2 Onnx model. It is used when to print the labels on the console. 
+需要强调的是，在使用Tiny Yolo2 Onnx模型进行评分时，`ImageNetData`类中的`Label`并没有真正使用。仅在控制台上打印标签时使用。
 
-The second step is to define the estimator pipeline. Usually, when dealing with deep neural networks, you must adapt the images to the format expected by the network. This is the reason images are resized and then transformed (mainly, pixel values are normalized across all R,G,B channels).
+第二步是定义评估器管道。通常，在处理深度神经网络时，必须使图像适应网络所期望的格式。这就是图像调整大小然后变换的原因（主要是在所有R、G、B通道中对像素值进行归一化）。
 
 ```csharp
 var pipeline = mlContext.Transforms.LoadImages(outputColumnName: "image", imageFolder: "", inputColumnName: nameof(ImageNetData.ImagePath))
@@ -101,10 +101,10 @@ var pipeline = mlContext.Transforms.LoadImages(outputColumnName: "image", imageF
                 .Append(mlContext.Transforms.ApplyOnnxModel(modelFile: modelLocation, outputColumnNames: new[] { TinyYoloModelSettings.ModelOutput }, inputColumnNames: new[] { TinyYoloModelSettings.ModelInput }));
 ```
 
-You also need to check the neural network, and check the names of the input / output nodes. In order to inspect the model, you can use tools like [Netron](https://github.com/lutzroeder/netron), which is automatically installed with [Visual Studio Tools for AI](https://visualstudio.microsoft.com/downloads/ai-tools-vs/). 
-These names are used later in the definition of the estimation pipe: in the case of the inception network, the input tensor is named 'image' and the output is named 'grid'
+您还需要检查神经网络，并检查输入/输出节点的名称。为了检查模型，您可以使用[Netron](https://github.com/lutzroeder/netron)之类的工具，它与[Visual Studio Tools for AI](https://visualstudio.microsoft.com/downloads/ai-tools-vs/)一起自动安装。 
+这些名称稍后将在评估管道的定义中使用：在初始网络的情况下，输入张量命名为“image”，输出命名为“grid”。
 
-Define the **input** and **output** parameters of the Tiny Yolo2 Onnx Model.
+定义模型的**输入**和**输出**参数。
 
 ```csharp
 public struct TinyYoloModelSettings
@@ -123,17 +123,17 @@ public struct TinyYoloModelSettings
 
 ![inspecting neural network with netron](./docs/Netron/netron.PNG)
 
-Finally, we return the trained model after *fitting* the estimator pipeline. 
+最后，我们在*拟合*评估器管道之后返回训练模型。
 
 ```csharp
   var model = pipeline.Fit(data);
   return model;
 ```
-When obtaining the prediction, we get an array of floats in the property `PredictedLabels`. The array is a float array of size **21125**. This is the output of model i,e 125x13x13 as discussed earlier. This output is interpreted by `YoloOutputParser` class and returns a number of bounding boxes for each image. Again these boxes are filtered so that we retrieve only 5 bounding boxes which have better confidence(how much certain that a box contains the obejct) for each object of the image. On console we display the label value of each bounding box.
 
-# Detect objects in the image:
 
-After the model is configured, we need to pass the image to the model to detect objects. When obtaining the prediction, we get an array of floats in the property `PredictedLabels`. The array is a float array of size **21125**. This is the output of model i,e 125x13x13 as discussed earlier. This output is interpreted by `YoloOutputParser` class and returns a number of bounding boxes for each image. Again these boxes are filtered so that we retrieve only 5 bounding boxes which have better confidence(how much certain that a box contains the obejct) for each object of the image. 
+# 检测图像中的对象:
+
+在模型配置完成后，我们需要将图像传递给模型来检测对象。获取预测时，我们在属性`PredictedLabels`中获得一个浮点数组。该数组是一个浮点数组，大小为**21125**。如前所述，这是125x13x13的输出。此输出由“YoloOutputParser”类解释，并为每个图像返回多个边界框。再次过滤这些框，以便我们仅检索5个边界框，这些边界框对于图像的每个对象具有更好的可信度（一个框包含obejct的确定程度如何）。
 
 ```csharp
 IEnumerable<float[]> probabilities = modelScorer.Score(imageDataView);
@@ -146,6 +146,6 @@ var boundingBoxes =
     .Select(boxes => parser.FilterBoundingBoxes(boxes, 5, .5F));
 ```
 
-**Note** The Tiny Yolo2 model is not having much accuracy compare to full YOLO2 model. As this is a sample program we are using Tiny version of Yolo model i.e Tiny_Yolo2
+**注意**与完整的Yolo2模型相比，Tiny Yolo2模型没有太多的精确度。由于这是一个示例程序，我们使用的是微型版本的Yolo模型，即Tiny_Yolo2
 
 
