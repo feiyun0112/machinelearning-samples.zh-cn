@@ -1,75 +1,75 @@
-# Object Detection - ASP.NET Core Web & WPF Desktop Sample
+# 对象检测-ASP.NET Core Web和WPF桌面示例
 
-| ML.NET version | API type    | Status     | App Type    | Data type   | Scenario         | ML Task       | Algorithms                        |
-|----------------|-------------|------------|-------------|-------------|------------------|---------------|-----------------------------------|
-| v1.5.0         | Dynamic API | Up-to-date | End-End app | image files | Object Detection | Deep Learning | ONNX: Tiny YOLOv2 & Custom Vision |
+| ML.NET 版本 | API 类型          | 状态                        | 应用程序类型    | 数据类型 | 场景            | 机器学习任务                   | 算法                  |
+|----------------|-------------------|-------------------------------|-------------|-----------|---------------------|---------------------------|-----------------------------|
+| v1.5.0         | 动态API | 最新 | 端到端应用 | 图像文件 | 对象检测 | 深度学习 | ONNX: Tiny YOLOv2 & Custom Vision |
 
-## Problem
+## 问题
 
-Object detection is one of the classic problems in computer vision: Recognize what objects are inside a given image and also where they are in the image. For these cases, you can either use pre-trained models or train your own model to classify images specific to your custom domain.  This sample uses a pre-trained model by default, but you can also add your own model exported from [Custom Vision](https://www.customvision.a).
+对象检测是计算机视觉中的经典问题之一：识别给定图像中包含哪些对象以及它们在图像中的位置。 对于这些情况，您可以使用预先训练的模型，也可以训练自己的模型对自定义域特定的图像进行分类。 默认情况下，此示例使用预先训练的模型，但是您也可以添加从[Custom Vision](https://www.customvision.a)导出的模型。
 
-## How the sample works
+## 示例的工作原理
 
-This sample consists of two separate apps:
+此示例由两个独立的应用程序组成:
 
-- A **WPF Core desktop app** that renders a live-stream of the device's web cam, runs the video frames through an object detection model using ML.NET, and paints bounding boxes with labels indicating the objects detected in real-time.
-- An **ASP.NET Core Web app** that allows the user to upload or select an image.  The Web app then runs the image through an object detection model using ML.NET, and paints bounding boxes with labels indicating the objects detected.
+- 一个**WPF Core 桌面应用程序**呈现摄像头的实时流，使用ML.NET通过对象检测模型运行视频帧，并用标签绘制边界框，指示实时检测到的对象。
+- 一个允许用户上载或选择图像的**ASP.NET Core Web应用**。Web应用程序使用ML.NET通过一个对象检测模型运行图像，并用指示检测到的对象的标签绘制边界框。
 
-The Web app shows the images listed on the right, and each image may be selected to process. Once the image is processed, it is drawn in the middle of the screen with labeled bounding boxes around each detected object as shown below.
+Web应用程序显示右侧列出的图像，可以选择每个图像进行处理。一旦图像被处理，它将被绘制在屏幕的中间，每个检测到的对象周围都有标记的边界框，如下所示。
 
 ![Animated image showing object detection web sample](./docs/Screenshots/ObjectDetection.gif)
 
-Alternatively you can try uploading your own images as shown below.
+或者，您可以尝试上传自己的图片，如下所示。
 
 ![Animated image showing object detection web sample](./docs/Screenshots/FileUpload.gif)
 
 ## ONNX
 
-The Open Neural Network eXchange i.e [ONNX](http://onnx.ai/) is an open format to represent deep learning models. With ONNX, developers can move models between state-of-the-art tools and choose the combination that is best for them. ONNX is developed and supported by a community of partners, including Microsoft.
+开放式神经网络交换即[ONNX](http://onnx.ai/)是一种表示深度学习模型的开放格式。使用ONNX，开发人员可以在最先进的工具之间移动模型，并选择最适合他们的组合。ONNX是由包括微软在内的众多合作伙伴共同开发和支持的。
 
-## Pre-trained models
+## 预训练模型
 
-There are multiple pre-trained models for identifying multiple objects in the images. Both the **WPF app** and the **Web app** default to use the pre-trained model, **Tiny YOLOv2**, downloaded from the [ONNX Model Zoo](https://github.com/onnx/models/tree/master/vision/object_detection_segmentation/tiny_yolov2); a collection of pre-trained, state-of-the-art models in the ONNX format. **Tiny YOLOv2** is a real-time neural network for object detection that detects [20 different classes](./OnnxObjectDetection/ML/DataModels/TinyYoloModel.cs#L10-L6) and was trained on the [Pascal VOC](http://host.robots.ox.ac.uk/pascal/VOC/) dataset. It is made up of 9 convolutional layers and 6 max-pooling layers and is a smaller version of the more complex full [YOLOv2](https://pjreddie.com/darknet/yolov2/) network.
+有多个预先训练的模型用于识别图像中的多个对象。**WPF app**和**Web app**都默认使用从[ONNX Model Zoo](https://github.com/onnx/models/tree/master/vision/object_detection_segmentation/tiny_yolov2)下载的预先训练好的模型**Tiny YOLOv2**; 一组经过预先训练的、最先进的ONNX格式模型。**Tiny YOLOv2**是一种用于目标检测的实时神经网络，用于检测[20个不同的类](./OnnxObjectDetection/ML/DataModels/TinyYoloModel.cs#L10-L6)，并在[Pascal VOC](http://host.robots.ox.ac.uk/pascal/VOC/)数据集上进行训练。它由9个卷积层和6个最大池层组成，是更复杂的完整的[YOLOv2](https://pjreddie.com/darknet/yolov2/)网络的较小版本。
 
-## Custom Vision models
+## Custom Vision 模型
 
-This sample defaults to use the pre-trained Tiny YOLOv2 model described above.  However it was also written to support ONNX models exported from Microsoft [Custom Vision](https://www.customvision.ai).
+此示例默认使用上述预先训练的Tiny YOLOv2模型。不过，它也支持从微软[Custom Vision](https://www.customvision.ai)导出的ONNX模型。
 
-### To use your own model, use the following steps
+### 要使用自己的模型，请使用以下步骤
 
-1. [Create and train](https://docs.microsoft.com/en-us/azure/cognitive-services/custom-vision-service/get-started-build-detector) an object detector with the Custom Vision. To export the model, make sure to select a **compact** domain such as **General (compact)**. To export an existing object detector, convert the domain to compact by selecting the gear icon at the top right. In _**Settings**_, choose a compact model, save, and train your project.
-2. [Export your model](https://docs.microsoft.com/azure/cognitive-services/custom-vision-service/export-your-model) by going to the _**Performance**_ tab. Select an iteration trained with a compact domain, an "Export" button will appear. Select _Export_, _ONNX_, _ONNX1.2_, and then _Export_. Once the file is ready, select the *Download* button.
-3. The export will a zip file containing several files, including some sample code, a list of labels, and the ONNX model.  Drop the .zip file into the [**OnnxModels**](./OnnxObjectDetection/ML/OnnxModels) folder in the [OnnxObjectDetection](./OnnxObjectDetection) project.
-4. In Solutions Explorer, right-click the [OnnxModels](./OnnxObjectDetection/ML/OnnxModels) folder and select _Add Existing Item_. Select the .zip file you just added.
-5. In Solutions Explorer, select the .zip file from the [OnnxModels](./OnnxObjectDetection/ML/OnnxModels) folder. Change the following properties for the file:
-    - _Build Action -> Content_
-    - _Copy to Output Directory -> Copy if newer_
+1. 使用 Custom Vision [创建和训练](https://docs.microsoft.com/en-us/azure/cognitive-services/custom-vision-service/get-started-build-detector)物体探测器。要导出模型，请确保选择一个**紧凑**域，例如**常规（紧凑）**。 要导出现有的对象检测器，请通过选择右上角的齿轮图标将域转换为紧凑型。 在_ **设置** _中，选择一个紧凑的模型，保存并训练您的项目。
+2. 转到_**性能**_选项卡[导出模型](https://docs.microsoft.com/azure/cognitive-services/custom-vision-service/export-your-model)。选择一个用紧凑域训练的迭代，将出现一个“导出”按钮。选择_导出_、_ONNX_、_ONNX1.2_，然后选择导出。文件准备好后，选择“下载”按钮。
+3. 导出的是一个包含多个文件的zip文件，包括一些示例代码、标签列表和ONNX模型。将.zip文件放到[OnnxObjectDetection](./OnnxObjectDetection)项目中的[**OnnxModels**](./OnnxObjectDetection/ML/OnnxModels)文件夹中。
+4. 在解决方案资源管理器中，右键单击[OnnxModels](./OnnxObjectDetection/ML/OnnxModels)文件夹，然后选择_添加现有项_。选择刚添加的.zip文件。
+5. 在解决方案资源管理器中，从[OnnxModels](./OnnxObjectDetection/ML/OnnxModels)文件夹中选择.zip文件。更改文件的以下属性：
+    - _生成操作 -> 内容_
+    - _复制到输出目录 -> 如果较新则复制_
 
-Now when you build and run the app, it will used your model instead of the Tiny YOLOv2 model.
+现在，当你生成和运行应用程序时，它将使用你的模型而不是Tiny YOLOv2模型。
 
-## Model input and output
+## 模型输入和输出
 
-In order to parse the prediction output of the ONNL model, we need to understand the format (or shape) of the input and output tensors.  To do this, we'll start by using [Netron](https://lutzroeder.github.io/netron/), a GUI visualizer for neural networks and machine learning models, to inspect the model.
+为了解析ONNL模型的预测输出，我们需要了解输入和输出张量的格式（或形状）。为此，我们将首先使用[Netron](https://lutzroeder.github.io/netron/)，一个用于神经网络和机器学习模型的GUI可视化工具，用于检查模型。
 
-Below is an example of what we'd see upon opening this sample's Tiny YOLOv2 model with Netron:
+下面是一个例子，我们将看到使用Netron打开这个示例的Tiny YOLOv2模型：
 
 ![Output from inspecting the Tiny YOLOv2 model with Netron](./docs/Netron/TinyYolo2_model_onnx.png)
 
-From the output above, we can see the Tiny YOLOv2 model has the following input/output formats:
+从上面的输出中，我们可以看到Tiny YOLOv2模型具有以下输入/输出格式：
 
-### Input: 'image' 3x416x416
+### 输入: 'image' 3x416x416
 
-The first thing to notice is that the **input tensor's name** is **'image'**.  We'll need this name later when we define **input** parameter of the estimation pipeline.
+首先要注意的是，**输入张量的名称**是**'image'**。稍后在定义评估管道的**input**参数时，我们将需要这个名称。
 
-We can also see that the or **shape of the input tensor** is **3x416x416**.  This tells that the bitmap image passed into the model should be 416 high x 416 wide. The '3' indicates the image(s) should be in BGR format; the first 3 'channels' are blue, green, and red, respectively.
+我们还可以看到，**输入张量的形状**是**3x416x416**。这说明传入模型的位图图像应该是416高x 416宽。“3”表示图像应为BGR格式；前3个“通道”分别是蓝色、绿色和红色。
 
-### Output: 'data' 125x13x13
+### 输出: 'data' 125x13x13
 
-As with the input tensor, we can see **output's name** is **'data'**.  Again, we'll make note of that for when we define the **output** parameter of the estimation pipeline.
+与输入张量一样，我们可以看到**输出名称**是**'data'**。同样，在定义评估管道的**output**参数时，我们会注意到这一点。
 
-We can also see that the **shape of the output tensor** is **125x13x13**.
+我们还可以看到， **输出张量的形状**是**125x13x13**。
 
-The '13x13' portion of 125x13x13 means that the image is divided up into a 13x13 grid of 'cells' (13 columns x 13 rows). And because we know that the input image is 416x416, we can deduce that each of these 'cells' are 32 high x 32 wide (416/13=32)
+125x13x13的“13x13”部分意味着图像被分成一个13x13的“单元格”网格（13列x 13行）。因为我们知道输入图像是416x416，所以我们可以推断出每个“单元”都是32高x 32宽（416/13=32）
 
 ```
    ├──────────────── 416 ─────────────────┤
@@ -90,9 +90,9 @@ The '13x13' portion of 125x13x13 means that the image is divided up into a 13x13
                       13
 ```
 
-What about the 125? The '125' tells us that, for each of the grid cells, there are 125 'channels' (or pieces of data) returned by the model as a prediction output for that individual cell.
+那125呢？ “125”告诉我们，对于每个网格单元，模型返回125个“通道”（或数据）作为该单个单元的预测输出。
 
-To understand why there are 125 channels, we first we need to understand that the model doesn't predict arbitrary boundary boxes for an object. Instead each cell is responsible for predicting 5 predetermined boundary boxes. These 5 boxes are calculated based on the offsets to each of the `anchor` boxes below:
+要了解为什么有125个通道，我们首先需要了解该模型不能预测对象的任意边界框。 相反，每个单元格负责预测5个预定的边界框。 这5个框是根据以下每个`anchor` 框的偏移量计算得出的：
 
 ```
 ┌───────────────────┐
@@ -107,37 +107,37 @@ To understand why there are 125 channels, we first we need to understand that th
 └───────────────────┘
 ```
 
-So for each individual cell, the model returns 5 predictions (one for each anchor, represented by the box shapes above), and each prediction includes the following 25 parameters:
+因此，对于每个单独的单元格，该模型返回5个预测（每个锚定一个，由上面的框形表示），每个预测包括以下25个参数：
 
-- 4 parameters indicating boundary box's location (x, y, width, height)
-- 1 parameter for the box's confidence score (or objectness)
-- 20 class probabilities (one probability score per class indicating the likeliness of the object being that class)
+- 4个参数指示边界框的位置（x，y，宽度，高度）
+- 1个参数指示盒子的置信度得分（或客观性）
+- 20个类别的概率（每个类别一个概率分数，表明该对象是该类别的可能性）
 
-5 boxes x 25 parameters = 125 'channels'
+5个盒子x 25个参数= 125个'通道'
 
-_Note, if the model were trained to detect a different number of classes this value would be different. For example, a model that was able to detect only 3 different classes would have an output format of 40x13x13:_
+_注意，如果对模型进行训练以检测不同数量的类，则该值将不同。例如，仅能检测3个不同类的模型的输出格式为40x13x13：_
 
-- _(x, y, width, height, objectness) + 3 class probabilities = 8 parameters_
-- _5 boxes x 8 parameters = 40 'channels'_
+- _（x，y，宽度，高度，客观性）+ 3个类别概率= 8个参数_
+- _5个盒子 x 8个参数 = 40个'通道'_
 
-## Solution
+## 解决方案
 
-**The projects in this solution use .NET Core 3.0.  In order to run this sample, you must install the .NET Core SDK 3.0.  To do this either:**
+**此解决方案中的项目使用.NET Core 3.0。 为了运行此示例，您必须安装.NET Core SDK 3.0。 为此，请执行以下任一操作：**
 
-1. Manually install the SDK by going to [.NET Core 3.0 download page](https://aka.ms/netcore3download) and download the latest **.NET Core Installer** in the **SDK** column.
-2. Or, if you're using Visual Studio 2019, go to: _**Tools > Options > Environment > Preview Features**_ and check the box next to: _**Use previews of the .NET Core SDK**_
+1. 通过转到[.NET Core 3.0下载页面](https://aka.ms/netcore3download)手动安装SDK，并在“SDK”列中下载最新的“.NET Core安装程序”。
+2. 或者，如果您使用的是Visual Studio 2019，请转至：_ **工具>选项>环境>预览功能** _，然后选中以下复选框：_ **使用.NET Core SDK的预览**
 
-### The solution contains three projects
+### 解决方案包含三个项目
 
-- [**OnnxObjectDetection**](./OnnxObjectDetection) is a .NET Standard library used by both the WPF app and the Web app.  It contains most of the logic for running images through the model and parsing the resulting prediction.  This project also contains the ONNX model file.  With the exception of drawing the labels bounding boxes on the image/screen, all of the following code snippets are contained in this project.
-- [**OnnxObjectDetectionWeb**](./OnnxObjectDetectionWeb) contains an ASP.NET Core Web App that that contains both **Razor UI pages** and an **API controller** to process and render images.
-- [**OnnxObjectDetectionApp**](./OnnxObjectDetectionApp) contains an .NET CORE WPF Desktop App that uses [OpenCvSharp](https://github.com/shimat/opencvsharp) to capture the video from the device's webcam.
+- [**OnnxObjectDetection**](./OnnxObjectDetection)是WPF应用程序和Web应用程序都使用的.NET Standard库。 它包含用于通过模型运行图像并解析结果预测的大多数逻辑。 该项目还包含ONNX模型文件。 除了在图像/屏幕上绘制标签边界框之外，此项目包含下面的所有代码段。
+- [**OnnxObjectDetectionWeb**](./OnnxObjectDetectionWeb) 包含一个ASP.NET Core Web App，其中包含**Razor UI页面**和**API controller**以处理和呈现图像。
+- [**OnnxObjectDetectionApp**](./OnnxObjectDetectionApp) 包含一个.NET CORE WPF桌面应用程序，该应用程序使用[OpenCvSharp](https://github.com/shimat/opencvsharp)从设备的网络摄像头捕获视频。
 
-## Code Walkthrough
+## 代码演练
 
-_This sample differs from the [getting-started object detection sample](https://github.com/dotnet/machinelearning-samples/tree/main/samples/csharp/getting-started/DeepLearning_ObjectDetection_Onnx) in that here we load/process the images **in-memory** whereas the getting-started sample loads the images from a **file**._
+_该示例与[getting-started object detection sample](https://github.com/dotnet/machinelearning-samples/tree/main/samples/csharp/getting-started/DeepLearning_ObjectDetection_Onnx)不同，在这里我们加载/处理在内存中的图像**，而入门示例从**文件**中加载图像。_
 
-Create a class that defines the data schema to use while loading data into an `IDataView`. ML.NET supports the `Bitmap` type for images, so we'll specify `Bitmap` property decorated with the `ImageTypeAttribute` and pass in the height and width dimensions we got by [inspecting the model](#model-input-and-output), as shown below.
+创建一个类，该类定义将数据加载到IDataView中时要使用的数据模式。 ML.NET支持图像的`Bitmap`类型，因此我们将指定以`ImageTypeAttribute`修饰的`Bitmap`属性，并传入通过[检查模型]](#model-input-and-output)得到的高度和宽度尺寸，如下所示。
 
 ```csharp
 public struct ImageSettings
@@ -153,15 +153,15 @@ public class ImageInputData
 }
 ```
 
-### ML.NET: Configure the model
+### ML.NET: 配置模型
 
-The first step is to create an empty `DataView` to obtain the schema of the data to use when configuring the model.
+第一步是创建一个空的`DataView`，以获取配置模型时要使用的数据架构。
 
 ```csharp
 var dataView = _mlContext.Data.LoadFromEnumerable(new List<ImageInputData>());
 ```
 
-The second step is to define the estimator pipeline. Usually when dealing with deep neural networks, you must adapt the images to the format expected by the network.  For this reason, the code below resizes and transforms the images (pixel values are normalized across all R,G,B channels).
+第二步是定义评估器管道。通常在处理深度神经网络时，必须使图像适应网络所期望的格式。因此，下面的代码将调整图像的大小并对其进行变换（所有R、G、B通道的像素值都已标准化）。
 
 ```csharp
 var pipeline = mlContext.Transforms.ResizeImages(resizing: ImageResizingEstimator.ResizingKind.Fill, outputColumnName: onnxModel.ModelInput, imageWidth: ImageSettings.imageWidth, imageHeight: ImageSettings.imageHeight, inputColumnName: nameof(ImageInputData.Image))
@@ -169,7 +169,7 @@ var pipeline = mlContext.Transforms.ResizeImages(resizing: ImageResizingEstimato
                 .Append(mlContext.Transforms.ApplyOnnxModel(modelFile: onnxModel.ModelPath, outputColumnName: onnxModel.ModelOutput, inputColumnName: onnxModel.ModelInput));
 ```
 
-Next, we'll use the input and output tensor names we got by [inspecting the model](#model-input-and-output) to define the **input** and **output** parameters of the Tiny YOLOv2 Onnx Model.
+接下来，我们将使用通过[检查模型](#model-input-and-output) 得到的输入和输出张量名称来定义Tiny YOLOv2 Onnx模型的**input**和**output**参数。
 
 ```csharp
 public struct TinyYoloModelSettings
@@ -179,17 +179,17 @@ public struct TinyYoloModelSettings
 }
 ```
 
-Last, create the model by fitting the `DataView`.
+最后，通过拟合“DataView”来创建模型。
 
 ```csharp
 var model = pipeline.Fit(dataView);
 ```
 
-## Load model and create PredictionEngine
+## 加载模型并创建PredictionEngine
 
-After the model is configured, we need to save the model, load the saved model, create a `PredictionEngine`, and then pass the image to the engine to detect objects using the model. This is one place that the **Web** app and the **WPF** app differ slightly.
+配置模型后，我们需要保存模型，加载保存的模型，创建一个`PredictionEngine`，然后将图像传递给引擎以使用模型检测对象。这是一个**Web**应用程序和**WPF**应用程序略有不同的地方。
 
-The **Web** app uses a `PredictionEnginePool` to efficiently manage and provide the service with a `PredictionEngine` to use to make predictions.  Internally, it is optimized so the object dependencies are cached and shared across Http requests with minimum overhead when creating those objects.
+**Web**应用程序使用一个`PredictionEnginePool`来高效地管理服务，并为服务提供一个`PredictionEngine`来进行预测。在内部，它进行了优化，以便在创建这些对象时，以最小的开销在Http请求之间缓存和共享对象依赖关系。
 
 ```csharp
 public ObjectDetectionService(PredictionEnginePool<ImageInputData, TinyYoloPrediction> predictionEngine)
@@ -198,7 +198,7 @@ public ObjectDetectionService(PredictionEnginePool<ImageInputData, TinyYoloPredi
 }
 ```
 
-Whereas the **WPF** desktop app creates a single `PredictionEngine` and caches locally to be used for each frame prediction.  And the key point to clarify is that the calling code that instantiates the `PredictionEngine` is responsible for handling the caching (as compared to the `PredictionEnginePool`).
+而**WPF**桌面应用程序创建一个`PredictionEngine`，并在本地缓存以用于每个帧预测。需要澄清的关键点是，实例化`PredictionEngine`的调用代码负责处理缓存（与`PredictionEnginePool`相比）。
 
 ```csharp
 public PredictionEngine<ImageInputData, TinyYoloPrediction> GetMlNetPredictionEngine()
@@ -207,9 +207,9 @@ public PredictionEngine<ImageInputData, TinyYoloPrediction> GetMlNetPredictionEn
 }
 ```
 
-## Detect objects in the image
+## 检测图像中的对象
 
-When obtaining the prediction, we get a `float` array of size **21125** in the `PredictedLabels` property. This is the 125x13x13 output of the model [discussed earlier](#output-data-125x13x13). We then use the [`OnnxOutputParser`](./OnnxObjectDetection/OnnxOutputParser.cs) class to interpret and return a number of bounding boxes for each image. Again, these boxes are filtered so that we retrieve only 5 with high confidence.
+获取预测时，我们在`PredictedLabels`属性中得到一个大小为**21125**的 `float`数组。这是[前面讨论过的](#output-data-125x13x13)模型的125x13x13输出。然后，我们使用[`OnnxOutputParser`](./OnnxObjectDetection/OnnxOutputParser.cs)类解释并返回每个图像的多个边界框。同样，这些框被过滤，因此我们只检索到5个具有高置信度的框。
 
 ```csharp
 var labels = tinyYoloPredictionEngine?.Predict(imageInputData).PredictedLabels;
@@ -217,12 +217,11 @@ var boundingBoxes = outputParser.ParseOutputs(labels);
 var filteredBoxes = outputParser.FilterBoundingBoxes(boundingBoxes, 5, 0.5f);
 ```
 
-## Draw bounding boxes around detected objects in Image
+## 在图像中检测到的对象周围绘制边界框
 
-The final step is to draw the bounding boxes around the objects.
+最后一步是在对象周围绘制边界框。
 
-The **Web** app draws the boxes directly onto the image using Paint API and returns the image to display it in the browser.
-
+**Web**应用程序使用Paint API将框直接绘制到图像上，并返回图像以在浏览器中显示。
 ```csharp
 var img = _objectDetectionService.DrawBoundingBox(imageFilePath);
 
@@ -238,7 +237,7 @@ using (MemoryStream m = new MemoryStream())
 }
 ```
 
-Alternatively, the **WPF** app draws the bounding boxes on a [`Canvas`](https://docs.microsoft.com/en-us/dotnet/api/system.windows.controls.canvas?view=netcore-3.0) element that overlaps the streaming video playback.
+另外，**WPF**应用程序在与流式视频播放重叠的[`Canvas`](https://docs.microsoft.com/en-us/dotnet/api/system.windows.controls.canvas?view=netcore-3.0) 元素上绘制边界框。
 
 ```csharp
 DrawOverlays(filteredBoxes, WebCamImage.ActualHeight, WebCamImage.ActualWidth);
@@ -259,35 +258,36 @@ foreach (var box in filteredBoxes)
 }
 ```
 
-## Note on accuracy
+## 关于准确性的说明
 
-Tiny YOLOv2 is significantly less accurate than the full YOLOv2 model, but the tiny version is sufficient for this sample app.
+Tiny YOLOv2的精确度明显低于完整的YOLOv2模型，但是对于这个示例应用程序来说，Tiny版本已经足够了。
 
-## Troubleshooting (Web Application)
+## 疑难解答（Web应用程序）
 
-When deploying this application on Azure via App Service, you may encounter some common issues.
+通过应用程序服务在Azure上部署此应用程序时，您可能会遇到一些常见问题。
 
-1. Application returning 5xx code
+1. 应用程序返回5xx代码
 
-    1. One reason why you may get a 5xx code after deploying the application is the platform. The web application only runs on 64-bit architectures. In Azure, change the **Platform** setting in the your respective App Service located in the **Settings > Configuration > General Settings** menu.
 
-    1. Another reason for a 5xx code after deploying the application is the target framework for the web application is .NET Core 3.0, which is currently in preview. You can either revert the application and the referenced project to .NET Core 2.x or add an extension to your App Service.
+    1. 部署应用程序后，您可能会得到5xx代码的一个原因是平台。web应用程序仅在64位体系结构上运行。在Azure中，更改**设置>配置>常规设置**菜单中相应应用程序服务中的**平台**设置。
 
-        - To add .NET Core 3.0 support in the Azure Portal, select the **Add** button in the **Development Tools > Extensions** section of your respective App Service.
-        - Then, select **Choose Extension** and select **ASP.NET Core 3.0 (x64) Runtime** from the list of extensions and accept the Legal Terms to proceed with adding the extension to your App Service.
+    1. 部署应用程序后使用5xx代码的另一个原因是web应用程序的目标框架是.NET Core 3.0，它目前正在预览中。您可以将应用程序和引用的项目还原为.NET Core 2.x或向应用程序服务添加扩展。
 
-1. Relative paths
+        - 要在Azure门户中添加.NET Core 3.0支持，请选择相应应用程序服务的**开发工具>扩展**部分中的**添加**按钮。
+        - 然后，从扩展列表中选择**选择扩展**并选择**ASP.NET Core 3.0（x64）Runtime**并接受法律条款，继续将扩展添加到应用程序服务。
 
-    Paths work slightly differently when working locally versus on Azure. If you manage to successfully deploy your application but clicking on one of the pre-loaded images or uploading your own image does not work, try changing the relative paths. To do so, in the *Controllers/ObjectDetectionController.cs* file, change the of `_imagesTmpFolder` inside the constructor.
+1. 相对路径
+
+    在本地和Azure上工作时，路径的工作方式略有不同。如果成功地部署了应用程序，但单击其中一个预加载的映像或上载自己的映像不起作用，请尝试更改相对路径。为此，在*Controllers/ObjectDetectionController.cs*文件中，更改构造函数中的`_imagesTmpFolder`的值。
 
     ```csharp
     _imagesTmpFolder = CommonHelpers.GetAbsolutePath(@"ImagesTemp");
     ```
 
-    Do the same for the `imageFileRelativePath` inside the `Get` action.
+    对`Get`操作中的`imageFileRelativePath`执行相同的操作。
 
     ```csharp
     string imageFileRelativePath = @"assets" + url;
     ```
 
-    Alternatively, you can set a condition depending on the environment (dev/prod) whether to use the local version of the path or the one preferred by Azure.
+    或者，您可以根据环境（dev / prod）设置条件，是使用路径的本地版本还是Azure首选的版本。
