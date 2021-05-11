@@ -13,11 +13,11 @@
 有时您可能希望使用ML.NET训练模型，然后转换为ONNX，例如，如果您希望使用WinML使用模型以利用Windows应用程序中的GPU推断。
 
 不是所有的ML.NET模型都可以转换成ONNX；它依赖于训练器和训练管道中的变换。有关支持的训练器列表，请参见ML.NET[Algorithms Doc](https://docs.microsoft.com/dotnet/machine-learning/how-to-choose-an-ml-net-algorithm)中的表格，有关支持的转换的列表请查看[Data transforms Doc](https://docs.microsoft.com/dotnet/machine-learning/resources/transforms)。
-## Dataset
+## 数据集
 
 本示例使用[NYC出租车票价数据集](https://github.com/dotnet/machinelearning-samples/blob/main/datasets/README.md#nyc-taxi-fare)。
 
-## 数据集
+## 解决方案
 
 控制台应用程序项目`ONNXExport` 用于训练一个ML.NET模型，该模型根据行驶距离和乘客数量等特征预测出租车票价，将该模型导出到ONNX，然后使用ONNX模型进行预测。
 
