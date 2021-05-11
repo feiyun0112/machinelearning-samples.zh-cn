@@ -1,58 +1,57 @@
-﻿# Exporting an ML.NET model to ONNX
+# 将ML.NET模型导出到ONNX
 
-| ML.NET version | API type          | Status                        | App Type    | Data type | Scenario            | ML Task                   | Algorithms                  |
+| ML.NET 版本 | API 类型          | 状态                        | 应用程序类型    | 数据类型 | 场景            | 机器学习任务                   | 算法                  |
 |----------------|-------------------|-------------------------------|-------------|-----------|---------------------|---------------------------|-----------------------------|
-| v1.5.5           | Dynamic API | Up-to-date | Console app | .csv files | Price prediction | Regression  | Light GBM regression |
+| v1.5.5           | 动态API | 最新 | 控制台应用程序 | .csv文件 | 价格预测 | 回归  | Light GBM regression |
 
-In this sample, you'll see how to use ML.NET to train a regression model and then convert that model to the ONNX format.
+在这个示例中，您将看到如何使用ML.NET来训练回归模型，然后将该模型转换为ONNX格式。
 
-## Problem
+## 问题
 
-The Open Neural Network Exchange i.e [ONNX](http://onnx.ai/) is an open format to represent deep learning models. With ONNX, developers can move models between state-of-the-art tools and choose the combination that is best for them. ONNX is developed and supported by a community of partners.
+开放式神经网络交换即[ONNX](http://onnx.ai/)是一种表示深度学习模型的开放格式。使用ONNX，开发人员可以在最先进的工具之间移动模型，并选择最适合他们的组合。ONNX是由一个合作伙伴社区开发和支持的。
 
-There may be times when you want to train a model with ML.NET and then convert to ONNX, for instance if you want to consume your model with WinML to take advantage of GPU inferencing in Windows applications.
+有时您可能希望使用ML.NET训练模型，然后转换为ONNX，例如，如果您希望使用WinML使用模型以利用Windows应用程序中的GPU推断。
 
-Not all ML.NET models can be converted to ONNX; it is dependent on the trainers and transforms in the training pipeline. For a list of supported trainers see the tables in the ML.NET [Algorithms Doc](https://docs.microsoft.com/dotnet/machine-learning/how-to-choose-an-ml-net-algorithm) and for a list of supported transforms check out the [Data transforms Doc](https://docs.microsoft.com/dotnet/machine-learning/resources/transforms).
-
+不是所有的ML.NET模型都可以转换成ONNX；它依赖于训练器和训练管道中的变换。有关支持的训练器列表，请参见ML.NET[Algorithms Doc](https://docs.microsoft.com/dotnet/machine-learning/how-to-choose-an-ml-net-algorithm)中的表格，有关支持的转换的列表请查看[Data transforms Doc](https://docs.microsoft.com/dotnet/machine-learning/resources/transforms)。
 ## Dataset
 
-This sample uses the [NYC Taxi Fare dataset](https://github.com/dotnet/machinelearning-samples/blob/main/datasets/README.md#nyc-taxi-fare) for training.
+本示例使用[NYC出租车票价数据集](https://github.com/dotnet/machinelearning-samples/blob/main/datasets/README.md#nyc-taxi-fare)。
 
-## Solution
+## 数据集
 
-The console application project `ONNXExport` can be used to train an ML.NET model that predicts the price of taxi fare based on several features such as distance travelled and number of passengers, to export that model to ONNX, and then to consume the ONNX model and make predictions with it.
+控制台应用程序项目`ONNXExport` 用于训练一个ML.NET模型，该模型根据行驶距离和乘客数量等特征预测出租车票价，将该模型导出到ONNX，然后使用ONNX模型进行预测。
 
-### NuGet Packages
+### NuGet包
 
-To export an ML.NET model to ONNX, you must install the following NuGet packages in your project:
+要将ML.NET模型导出到ONNX，必须在项目中安装以下NuGet包：
 
 - Microsoft.ML.OnnxConverter
 
-You must also install:
+您还必须安装：
 
-- Microsoft.ML for training the ML.NET model
-- Microsoft.ML.ONNXRuntime and Microsoft.ML.OnnxTransformer for scoring the ONNX model
+- Microsoft.ML, 用于训练ML.NET模型
+- Microsoft.ML.ONNXRuntime和Microsoft.ML.OnnxTransformer，用于为ONNX模型评分
 
-### Transforms and trainers
+### 转换和训练器
 
-This pipeline contains the following transforms and trainers which are all ONNX exportable:
+此管道包含以下转换和训练器，它们都是ONNX可导出的：
 
-- OneHotEncoding transform
-- Concatenate transform
-- Light GBM trainer
+- OneHotEncoding 转换
+- Concatenate 转换
+- Light GBM 训练器
 
-### Code
+### 代码
 
-After training an ML.NET model, you can use the following code to convert to ONNX:
+训练ML.NET模型后，可以使用以下代码转换为ONNX：
 
 ```csharp
 using (var stream = File.Create("taxi-fare-model.onnx"))
    mlContext.Model.ConvertToOnnx(model, trainingDataView, stream);
 ```
 
-You need a transformer and input data to convert an ML.NET model to an ONNX model. By default, the ONNX conversion will generate the ONNX file with the latest OpSet version
+您需要一个转换器和输入数据来将ML.NET模型转换为ONNX模型。默认情况下，ONNX转换将生成具有最新OpSet版本的ONNX文件
 
-After converting to ONNX, you can then consume the ONNX model with the following code:
+转换为ONNX后，可以使用以下代码使用ONNX模型：
 
 ```csharp
 var onnxEstimator = mlContext.Transforms.ApplyOnnxModel(onnxModelPath);
@@ -62,7 +61,7 @@ using var onnxTransformer = onnxEstimator.Fit(trainingDataView);
 var onnxOutput = onnxTransformer.Transform(testDataView);
 ```
 
-You should get the same results when comparing the ML.NET model and ONNX model on the same sample input. If you run the project, you should get similar to the following output in the console:
+在同一个示例输入上比较ML.NET模型和ONNX模型时，应该会得到相同的结果。如果运行项目，则应在控制台中获得类似于以下输出的结果：
 
 ```console
 Predicted Scores with ML.NET model
@@ -79,8 +78,8 @@ Score      4.8969507
 Score      19.108932
 ```
 
-## Performance
+## 性能
 
-The default ONNX to ML.NET conversion is not optimal and produces extra graph outputs that are not needed for ML.NET usage. ONNX Runtime does reverse depth first search which results in a lot of conversion operations of native memory to managed memory from ONNX Runtime to ML.NET and execution of more than the necessary kernels. 
+默认的ONNX到ML.NET的转换不是最佳的，并且会产生ML.NET使用不需要的额外图形输出。ONNX运行时执行反向深度优先搜索，这会导致大量从ONNX运行时到ML.NET的本机内存到托管内存的转换操作，并执行超过必要内核的操作。
 
-If you specify just the necessary graph outputs, it will only execute a subset of the graph. Thus, by eliminating all graph outputs except Score, you can improve inference performance.
+如果只指定必要的图形输出，它将只执行图形的一个子集。因此，通过消除除Score之外的所有图形输出，可以提高推理性能。
