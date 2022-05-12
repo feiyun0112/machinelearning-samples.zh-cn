@@ -1,60 +1,60 @@
-# 信用卡欺诈识别（二元分类）
+# Fraud detection in credit cards (binary classification)
 
-| ML.NET 版本 | API 类型          | 状态                        | 应用程序类型    | 数据类型 | 场景            | 机器学习任务                   | 算法                  |
+| ML.NET version | API type          | Status                        | App Type    | Data type | Scenario            | ML Task                   | Algorithms                  |
 |----------------|-------------------|-------------------------------|-------------|-----------|---------------------|---------------------------|-----------------------------|
-| v1.4           | 动态 API | 最新版 | 两个控制台应用程序 | .csv 文件 | 欺诈识别 | 二元分类 | FastTree 二元分类 |
+| v1.4           | Dynamic API | Up-to-date | Two console apps | .csv file | Fraud Detection | Two-class classification | FastTree Binary Classification |
 
-在这个介绍性示例中，您将看到如何使用ML.NET来预测信用卡欺诈。在机器学习领域中，这种类型的预测被称为二元分类。
+In this introductory sample, you'll see how to use ML.NET to predict a credit card fraud. In the world of machine learning, this type of prediction is known as binary classification.
 
-## 问题
-这个问题的核心是预测信用卡交易（及其相关信息/变量）是否是欺诈。
+## Problem
+This problem is centered around predicting if credit card transaction (with its related info/variables) is a fraud or no. 
  
-交易的输入信息仅包含PCA（主成分分析）转换后的数值输入变量。遗憾的是，基于隐私原因，原始特征和附加的背景信息无法得到，但您建立模型的方式不会改变。 
+The input dataset of the transactions contain only numerical input variables which are the result of previous PCA (Principal Component Analysis) transformations. Unfortunately, due to confidentiality issues, the original features and additional background information are not available, but the way you build the model doesn't change.  
 
-特征V1, V2, ... V28是用PCA获得的主成分，未经PCA转换的特征是“Time”和“Amount”。
+Features V1, V2, ... V28 are the principal components obtained with PCA, the only features which have not been transformed with PCA are 'Time' and 'Amount'. 
 
-“Time”特征包含每个交易和数据集中的第一个交易之间经过的秒数。“Amount”特征是交易金额，该特征可用于依赖于示例的代价敏感学习。特征“Class”是响应变量，如果存在欺诈取值为1，否则为0。
+The feature 'Time' contains the seconds elapsed between each transaction and the first transaction in the dataset. The feature 'Amount' is the transaction Amount, this feature can be used for example-dependant cost-sensitive learning. Feature 'Class' is the response variable and it takes value 1 in case of fraud and 0 otherwise.
 
-数据集非常不平衡，正类（欺诈）数据占所有交易的0.172％。
+The dataset is highly unbalanced, the positive class (frauds) account for 0.172% of all transactions.
 
-使用这些数据集，您可以建立一个模型，当预测该模型时，它将分析交易的输入变量并预测欺诈值为false或true。
+Using those datasets you build a model that when predicting it will analyze a transaction's input variables and predict a fraud value of false or true.
 
-## 数据集
+## DataSet
 
-训练和测试数据基于公共数据集[dataset available at Kaggle](https://www.kaggle.com/mlg-ulb/creditcardfraud)，其最初来自于Worldline和ULB(Université Libre de Bruxelles)的机器学习小组(ttp://mlg.ulb.ac.be)在研究合作期间收集和分析的数据集。
+The training and testing data is based on a public [dataset available at Kaggle](https://www.kaggle.com/mlg-ulb/creditcardfraud) originally from Worldline and the Machine Learning Group (http://mlg.ulb.ac.be) of ULB (Université Libre de Bruxelles), collected and analysed during a research collaboration. 
 
-这些数据集包含2013年9月由欧洲持卡人通过信用卡进行的交易。 这个数据集显示了两天内发生的交易，在284,807笔交易中有492个欺诈。
+The datasets contains transactions made by credit cards in September 2013 by european cardholders. This dataset presents transactions that occurred in two days, where we have 492 frauds out of 284,807 transactions.
 
-作者：Andrea Dal Pozzolo、Olivier Caelen、Reid A. Johnson和Gianluca Bontempi。基于欠采样的不平衡分类概率。2015在计算智能和数据挖掘（CIDM）学术研讨会上的发言
+By: Andrea Dal Pozzolo, Olivier Caelen, Reid A. Johnson and Gianluca Bontempi. Calibrating Probability with Undersampling for Unbalanced Classification. In Symposium on Computational Intelligence and Data Mining (CIDM), IEEE, 2015
 
-有关相关主题的当前和过去项目的更多详细信息，请访问 http://mlg.ulb.ac.be/BruFence 和 http://mlg.ulb.ac.be/ARTML
+More details on current and past projects on related topics are available on http://mlg.ulb.ac.be/BruFence and http://mlg.ulb.ac.be/ARTML
 
-## 机器学习任务 - [二元分类](https://en.wikipedia.org/wiki/Binary_classification)
+## ML Task - [Binary Classification](https://en.wikipedia.org/wiki/Binary_classification)
 
-二元或二项式分类是根据分类规则将给定集合中的元素分成两组（预测每个元素属于哪个组）的任务。需要决定某项是否具有某种定性属性、某些特定特征的上下文
+Binary or binomial classification is the task of classifying the elements of a given set into two groups (predicting which group each one belongs to) on the basis of a classification rule. Contexts requiring a decision as to whether or not an item has some qualitative property, some specified characteristic.
 
-如果您想了解如何使用异常检测来检测欺诈，请访问[异常检测信用卡欺诈检测示例](../AnomalyDetection_CreditCardFraudDetection).。
+If you would like to learn how to detect fraud using anomaly detection, visit the [Anomaly Detection Credit Card Fraud Detection sample](../AnomalyDetection_CreditCardFraudDetection).
+  
+## Solution
 
-## 解决方案
-
-要解决这个问题，首先需要建立一个机器学习模型。 然后，您可以在现有训练数据上训练模型，评估其准确性有多好，最后使用该模型（在另一个应用程序中部署建立的模型）来预测信用卡交易样本是否存在欺诈。
+To solve this problem, first you need to build a machine learning model. Then you train the model on existing training data, evaluate how good its accuracy is, and lastly you consume the model (deploying the built model in a different app) to predict a fraud for a sample credit card transaction.
 
 ![Build -> Train -> Evaluate -> Consume](../shared_content/modelpipeline.png)
 
 
-### 1. 建立模型
-建立一个模型包括:
+### 1. Build model
+Building a model includes:
 
-- 准备数据并拆分为训练和测试数据
+- Preapre the data and split data for training and tests
 
-- 使用TextLoader加载数据，并指定与数据集映射的数据架构的类型名称。
+- Load the data with TextLoader by specifying the type name that holds data's schema to be mapped with datasets.
 
-- 创建一个估算器，并用Concatenate()转换数据，然后通过均值方差进行标准化。 
+- Create an Estimator and transform the data with a Concatenate() and Normalize by Mean Variance. 
 
-- 选择一个训练/学习算法（FastTree）来训练模型。
+- Choosing a trainer/learning algorithm (FastTree) to train the model with.
 
 
-初始代码类似以下内容：
+The initial code is similar to the following:
 
 `````csharp
 
@@ -100,26 +100,26 @@ IDataView testDataView = mlContext.Data.LoadFromTextFile<TransactionObservation>
 
 `````
 
-### 2. 训练模型
-训练模型是在训练数据（具有已知欺诈值）上运行所选算法以调整模型参数的过程。它是在估算器对象的 `Fit()` 方法中实现。
+### 2. Train model
+Training the model is a process of running the chosen algorithm on a training data (with known fraud values) to tune the parameters of the model. It is implemented in the `Fit()` method from the Estimator object.
 
-为了执行训练，您需要在DataView对象中提供了训练数据集后调用 `Fit()` 方法。
+To perform training you need to call the `Fit()` method by passing `trainingDataView` object.
 
 `````csharp    
     ITransformer model = pipeline.Fit(trainingDataView);
 `````
 
-### 3. 评估模型
-我们需要这一步骤来判定我们的模型对新数据的准确性。 为此，上一步中的模型再次针对另一个未在训练中使用的数据集运行。
+### 3. Evaluate model
+We need this step to conclude how accurate our model is. To do so, the model from the previous step is run against another dataset that was not used in training (`testDataView`). 
 
-`Evaluate()`比较测试数据集的预测值，并生成各种指标，例如准确性，您可以对其进探究。 
+`Evaluate()` compares the predicted values for the test dataset and produces various metrics, such as accuracy, you can explore.
 
 `````csharp
     EvaluateModel(mlContext, model, testDataView, trainerName);
 `````
 
-### 4. 使用模型
-训练完模型后，您可以使用`Predict()`API来预测交易是否存在欺诈。
+### 4. Consume model
+After the model is trained, you can use the `Predict()` API to predict if a transaction is a fraud, using a IDataSet.
 
 `````csharp
 [...]

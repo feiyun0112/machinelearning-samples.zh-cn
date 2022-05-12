@@ -3,92 +3,83 @@
 open System
 open System.IO
 open Microsoft.ML
-open Microsoft.ML.Runtime.Data
+open Microsoft.ML.Data
 open SentimentAnalysis.DataStructures.Model
 
 
 let appPath = Path.GetDirectoryName(Environment.GetCommandLineArgs().[0])
 
 let baseDatasetsLocation = @"../../../../Data"
-let trainDataPath = sprintf @"%s/wikipedia-detox-250-line-data.tsv" baseDatasetsLocation
-let testDataPath = sprintf @"%s/wikipedia-detox-250-line-test.tsv" baseDatasetsLocation
+let dataPath = sprintf @"%s/wikiDetoxAnnotated40kRows.tsv" baseDatasetsLocation
 
 let baseModelsPath = @"../../../../MLModels";
 let modelPath = sprintf @"%s/SentimentModel.zip" baseModelsPath
 
-let dataLoader (mlContext : MLContext) =
-    mlContext.Data.TextReader(
-        TextLoader.Arguments(
-            Separator = "tab",
-            HasHeader = true,
-            Column = 
-                [|
-                    TextLoader.Column("Label", Nullable DataKind.Bool, 0)
-                    TextLoader.Column("Text", Nullable DataKind.Text, 1)
-                |]
-        )
-    )
-
-let read (dataPath : string) (dataLoader : TextLoader) =
-    dataLoader.Read dataPath
+let absolutePath relativePath = 
+    let dataRoot = FileInfo(Reflection.Assembly.GetExecutingAssembly().Location)
+    Path.Combine(dataRoot.Directory.FullName, relativePath)
 
 let buildTrainEvaluateAndSaveModel (mlContext : MLContext) =
     // STEP 1: Common data loading configuration
-    let trainingDataView = 
-        dataLoader mlContext
-        |> read trainDataPath
+    let dataView = mlContext.Data.LoadFromTextFile<SentimentIssue>(dataPath, hasHeader = true)
+    
+    let trainTestSplit = mlContext.Data.TrainTestSplit(dataView, testFraction=0.2)
+    let trainingDataView = trainTestSplit.TrainSet
+    let testDataView = trainTestSplit.TestSet
 
-    let testDataView = 
-        dataLoader mlContext
-        |> read testDataPath
-
-    // STEP 2: Common data process configuration with pipeline data transformations
-    let dataProcessPipeline =
-        mlContext.Transforms.Text.FeaturizeText("Text", "Features")
+    // STEP 2: Common data process configuration with pipeline data transformations          
+    let dataProcessPipeline = mlContext.Transforms.Text.FeaturizeText("Features", "Text")
 
     // (OPTIONAL) Peek data (such as 2 records) in training DataView after applying the ProcessPipeline's transformations into "Features" 
     Common.ConsoleHelper.peekDataViewInConsole<SentimentIssue> mlContext trainingDataView dataProcessPipeline 2 |> ignore
+    //Peak the transformed features column
+    //Common.ConsoleHelper.peekVectorColumnDataInConsole mlContext "Features" trainingDataView dataProcessPipeline 1 |> ignore
 
-    // STEP 3: Set the training algorithm, then create and config the modelBuilder
-    let trainer = mlContext.BinaryClassification.Trainers.FastTree(label = "Label", features = "Features")
-    let modelBuilder = 
-        Common.ModelBuilder.create mlContext dataProcessPipeline
-        |> Common.ModelBuilder.addTrainer trainer
-
+    // STEP 3: Set the training algorithm, then create and config the modelBuilder                            
+    let trainer = mlContext.BinaryClassification.Trainers.FastTree(labelColumnName = "Label", featureColumnName = "Features")
+    let trainingPipeline = dataProcessPipeline.Append(trainer)
+    
     // STEP 4: Train the model fitting to the DataSet
     printfn "=============== Training the model ==============="
-    let trainedModel = 
-        modelBuilder
-        |> Common.ModelBuilder.train trainingDataView
-
+    let trainedModel = trainingPipeline.Fit(trainingDataView)
+    
     // STEP 5: Evaluate the model and show accuracy stats
     printfn "===== Evaluating Model's accuracy with Test data ====="
-    let metrics = 
-        (trainedModel, modelBuilder)
-        |> Common.ModelBuilder.evaluateBinaryClassificationModel testDataView "Label" "Score"
+    let predictions = trainedModel.Transform testDataView
+    let metrics = mlContext.BinaryClassification.Evaluate(predictions, "Label", "Score")
 
     Common.ConsoleHelper.printBinaryClassificationMetrics (trainer.ToString()) metrics
 
     // STEP 6: Save/persist the trained model to a .ZIP file
-    printfn "=============== Saving the model to a file ==============="
-    (trainedModel, modelBuilder)
-    |> Common.ModelBuilder.saveModelAsFile modelPath
+    use fs = new FileStream(modelPath, FileMode.Create, FileAccess.Write, FileShare.Write)
+    mlContext.Model.Save(trainedModel, trainingDataView.Schema, fs)
 
+    printfn "The model is saved to %s" (absolutePath modelPath)
+
+
+// (OPTIONAL) Try/test a single prediction by loding the model from the file, first.
 let testSinglePrediction (mlContext : MLContext) =
-    // (OPTIONAL) Try/test a single prediction by loding the model from the file, first.
-    let sampleStatement = { Text = "This is a very rude movie" }
+    let sampleStatement = { Label = false; Text = "This is a very rude movie" }
     
-    let resultprediction = 
-        Common.ModelScorer.create mlContext
-        |> Common.ModelScorer.loadModelFromZipFile modelPath
-        |> Common.ModelScorer.predictSingle sampleStatement
+    use stream = new FileStream(modelPath, FileMode.Open, FileAccess.Read, FileShare.Read)
+    let trainedModel,inputSchema = mlContext.Model.Load(stream)
+    
+    // Create prediction engine related to the loaded trained model
+    let predEngine= mlContext.Model.CreatePredictionEngine<SentimentIssue, SentimentPrediction>(trainedModel)
+
+    //Score
+    let resultprediction = predEngine.Predict(sampleStatement)
+
 
     printfn "=============== Single Prediction  ==============="
-    printfn "Text: %s | Prediction: %s sentiment | Probability: %f "
+    printfn 
+        "Text: %s | Prediction: %s sentiment | Probability: %f"
         sampleStatement.Text
-        (if Convert.ToBoolean(resultprediction.Prediction) then "Toxic" else "Nice")
+        (if Convert.ToBoolean(resultprediction.Prediction) then "Negative" else "Positive")
         resultprediction.Probability
     printfn "=================================================="
+
+
     
 
 [<EntryPoint>]

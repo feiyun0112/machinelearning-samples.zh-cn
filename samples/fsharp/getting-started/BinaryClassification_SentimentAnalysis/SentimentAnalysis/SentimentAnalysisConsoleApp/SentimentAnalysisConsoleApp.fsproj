@@ -7,9 +7,6 @@
 
   <ItemGroup>
     <Compile Include="..\..\..\..\common\ConsoleHelper.fs" Link="Common\ConsoleHelper.fs" />
-    <Compile Include="..\..\..\..\common\ModelBuilder.fs" Link="Common\ModelBuilder.fs" />
-    <Compile Include="..\..\..\..\common\ModelScorer.fs" Link="Common\ModelScorer.fs" />
-    <Compile Include="..\..\..\..\common\Pipeline.fs" Link="Common\Pipeline.fs" />
   </ItemGroup>
   
   <ItemGroup>
@@ -22,6 +19,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.ML" Version="$(MicrosoftMLVersion)" />
+    <PackageReference Include="Microsoft.ML.FastTree" Version="$(MicrosoftMLVersion)" />
   </ItemGroup>
 
   <ItemGroup>

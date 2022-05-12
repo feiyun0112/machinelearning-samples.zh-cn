@@ -1,24 +1,24 @@
-# 产品销售的峰值检测和变化点检测
+# Spike Detection and Change Point Detection of Product sales
 
-| ML.NET 版本 | API 类型          | 状态                        | 应用程序类型    | 数据类型 | 场景            | 机器学习任务                   | 算法                  |
+| ML.NET version | API type          | Status                        | App Type    | Data type | Scenario            | ML Task                   | Algorithms                  |
 |----------------|-------------------|-------------------------------|-------------|-----------|---------------------|---------------------------|-----------------------------|
-| v1.4         | 动态 API | 最新版 | 控制台应用程序 | .csv 文件 | 产品销售峰值检测| 时间序列 - 异常检测| IID Spike Detection and IID Change point Detection |
+| v1.4         | Dynamic API | Up-to-date | Console app | .csv files | Product Sales Spike Detection| Time Series - Anomaly Detection | IID Spike Detection and IID Change point Detection |
 
-在这个介绍性示例中，您将看到如何在产品销售中使用[ML.NET](https://www.microsoft.com/net/learn/apps/machine-learning-and-ai/ml-dotnet)来检测**峰值**和**变化点**。在机器学习的世界中，这种类型的任务被称为时间序列异常检测。
+In this introductory sample, you'll see how to use [ML.NET](https://www.microsoft.com/net/learn/apps/machine-learning-and-ai/ml-dotnet) to detect **spikes** and **change points** in Product sales. In the world of machine learning, this type of task is called TimeSeries Anomaly Detection.
 
-## 问题
-我们有超过3个月的产品销售数据，在这段时间内，产品的销售是高和正常的。我们识别产品销售的突然高峰，这样我们就可以使用这些高峰数据来分析产品销售的趋势。
+## Problem
+We are having data on Product sales over 3 months period in which the sales are high and normal. we identify sudden spikes in Product sales so that we can use this spiked data to analyze trends in sales of Product. 
 
-为了解决这个问题，我们将使用下列输入构建一个ML模型：
-* 日期
-* 超过3个月的产品销售
+To solve this problem, we will build an ML model that takes as inputs: 
+* Date-Month
+* ProductSales over 3 months period
 
-并预测产品销售的峰值和变化点。
+and predicts the spikes and changepoints in Product sales.
 
-## 数据集
-我们已经为产品销售创建了示例数据集。可以在[这里](./SpikeDetection/Data/product-sales.csv)找到数据集`product-sales.csv`
+## Dataset
+We have created sample dataset for Product sales. The dataset `product-sales.csv` can be found [here](./SpikeDetection/Data/product-sales.csv)
 
-**产品销售数据集**的格式如下。
+Format of **Product Sales DataSet** looks like below.
 
 | Month  | ProductSales |
 |--------|--------------|
@@ -28,43 +28,44 @@
 | 1-Feb  | 199.3        |
 | ...    | ....         |
 
-产品销售数据集中的数据格式引用自**洗发水销售数据集**，洗发水销售数据集的许可证在[这里](./SpikeDetection/Data/SHAMPOO-SALES-LICENSE.txt)。
+The data format in Product Sales dataset is referenced from **shampoo-sales dataset** and the license for shampoo-sales dataset is available [here](./SpikeDetection/Data/SHAMPOO-SALES-LICENSE.txt).
 
-算法**IID Spike Detection**或**IID Change point Detection**适合于**独立和同分布的**。在概率论和数理统计中，如果每个随机变量具有相同的概率分布，并且它们彼此独立，则随机变量的集合是独立同分布的（IID）。更多信息可在维基百科[这里](https://en.wikipedia.org/wiki/Independent_and_identically_distributed_random_variables)获得
 
-## ML 任务 - 时间序列异常检测
-异常检测是在数据中检测异常值的过程。时间序列的异常检测是指在给定的输入时间序列上检测时间戳或点，在该时间序列中，时间序列的行为与预期的不同。这些偏差通常表示问题域中的一些感兴趣的事件：对用户帐户的网络攻击、断电、服务器上的突发RPS、内存泄漏等。
+The algorithms **IID Spike Detection** or **IID Change point Detection** are suited for dataset that is **independent and identically distributed**. In probability theory and statistics, a collection of random variables is independent and identically distributed(IID) if each random variable has the same probability distribution as the others and all are mutually independent. More information is available on wikipedia [here](https://en.wikipedia.org/wiki/Independent_and_identically_distributed_random_variables)
 
-另一方面，异常行为可以是持续的，也可以是暂时的突发。在这种情况下，有2种类型的异常：归因于临时爆发的**峰值**和表明系统的持续变化开始的**变化点**。
+## ML task - Time Series Anomaly Detection
+Anomaly detection is the process of detecting outliers in the data.Anomaly detection in time-series refers to detecting time stamps, or points on a given input time-series, at which the time-series behaves differently from what was expected. These deviations are typically indicative of some events of interest in the problem domain: a cyber-attack on user accounts, power outage, bursting RPS on a server, memory leak, etc.
 
-## 峰值检测
-峰值是由于输入时间序列的值突然而暂时的爆发。在实践中，它们可能由于各种原因而发生，这取决于应用程序：中断、网络攻击、病毒Web内容等。因此，在许多应用中，检测峰值是很重要的。
+On the other hand, an anomalous behavior can be either persistent over time or just a temporary burst.There are 2 types of anomalies in this context: **spikes** which are attributed to temporary bursts and **change points** which indicate the beginning of persistent changes in the system. 
 
-![峰值检测](./docs/images/SpikeDetection.png)
+## Spike Detection
+Spikes are attributed to sudden yet temporary bursts in the values of the input time-series.  In practice, they can happen due to a variety of reasons depending on the application: outages, cyber-attacks, viral web content, etc. Therefore, in many applications, it is important to detect spikes.
 
-## 变化点检测
-​变化点标志着时间序列中从预期开始的行为的持续偏差。在实践中，这些时间序列行为的变化通常是由系统动力学的一些基本变化触发的。例如，在系统遥测监视中，在一定时间点之后，存储器泄漏的引入可导致存储器使用时间序列中的（慢）趋势。
+![spikeDetection](./docs/images/SpikeDetection.png)
 
-![变化点检测](./docs/images/ChangePointDetection.png)
+## Change point Detection
+​Change points mark the beginning of more persistent deviations in the behavior of time-series from what was expected.In practice, these type of changes in the behavior of time-series are usually triggered by some fundamental changes in the dynamics of the system. For example, in system telemetry monitoring, an introduction of a memory leak can cause a (slow) trend in the time-series of memory usage after certain point in time. 
 
-## 解决方案
-要解决此问题，您需要在现有训练数据上构建和训练ML模型，评估其有多好（分析获得的指标），最后您可以使用/测试模型来预测给定输入数据变量的需求。
+![ChangepointDetection](./docs/images/ChangePointDetection.png)
+
+## Solution
+To solve this problem, you build and train an ML model on existing training data, evaluate how good it is (analyzing the obtained metrics), and lastly you can consume/test the model to predict the demand given input data variables.
 
 ![Build -> Train -> Evaluate -> Consume](../shared_content/modelpipeline.png)
 
-然而，在这个例子中，我们将建立和训练模型来演示时间序列异常检测库，因为它使用实际数据检测，并且没有评估方法。然后，我们将在预测输出列中查看检测到的异常。
+However, in this example we will build and train the model to demonstrate the Time Series anomaly detection library since it detects on actual data and does not have an evaluate method.  We will then review the detected anomalies in the Prediction output column.
 
-构建和训练模型的过程对于峰值检测和变化点检测是相同的；主要区别是您使用的算法(DetectIidSpike vs. DetectIidChangePoint)。
+The process of building and training models is the same for spike detection and change point detection; the main difference is the algorithm that you use (DetectIidSpike vs. DetectIidChangePoint).
 
-### 1. 建立模型
+### 1. Build model
 
-建立模型包括：
+Building a model includes: 
 
-* 创建只包含数据集架构的空IDataView。
+* Creating empty IDataView with just schema of dataset.
 
-* 通过应用转换器创建一个估算器（例如`IidSpikeDetector`或`IidChangePointDetector`）并设置参数（在这个例子中是置信水平和p值）。
+* Creating an Estimator by applying Transformer (e.g. `IidSpikeDetector` or `IidChangePointDetector`) and setting parameters (in this case confidence level and p-value).
 
-峰值检测的初始代码类似于以下代码：
+The initial code for Spike Detection is similar to the following:
 
 ```CSharp
 CreateEmptyDataView();
@@ -77,8 +78,8 @@ var estimator = mlContext.Transforms.DetectIidSpike(outputColumnName: nameof(Pro
 
 ```
 
-### 2. 转换模型
-注意，在IID峰值检测或IID变化点检测中，我们不需要进行训练，只需要进行转换。由于您不是在训练模型，所以不需要用实际数据加载IDataView，只需要数据的架构。因此，通过传递**空的IDataView对象**，使用`Fit()`API创建模型。
+### 2. Transform model
+Note that In IID Spike detection or IID change point detection, we don't need to do training, we just need to do transformation. As you are not training the model, there is no need to load IDataView with real data, you just need schema of data. So the model is created using `Fit()` API by passing **empty IDataView object**.
 
 ```CSharp
 //STEP 2:The Transformed Model.
@@ -88,10 +89,10 @@ var estimator = mlContext.Transforms.DetectIidSpike(outputColumnName: nameof(Pro
 ITransformer tansformedModel = estimator.Fit(CreateEmptyDataView());
 ```
 
-### 3. 使用模型
-* 在时间序列异常检测中，我们没有评估步骤。我们使用转换后的模型来预测数据中的异常。
+### 3. Consume model
+* We don't have evaluate step in TimeSeries Anomaly detection. We use the transformed model to predict the anomalies in the data.  
 
-* 将要预测的数据从（`Product Sales.csv`）加载到IDataView并创建预测。
+* Load the data to predict from (`product-sales.csv`) to an IDataView and create predictions.
 
 ```CSharp
 //Load the data into IDataView.
@@ -135,7 +136,7 @@ foreach (var p in predictions)
     //0       264.50  0.47
 ```
 
-### 变化点检测的控制台输出
+### Change Point Detection console output
 
 ```
 Alert   Score   P-Value Martingale value

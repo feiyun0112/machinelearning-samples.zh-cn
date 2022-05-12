@@ -1,60 +1,63 @@
-#产品推荐 - 矩阵分解问题示例
+# Product Recommendation - Matrix Factorization problem sample
 
-| ML.NET 版本 | API 类型          | 状态                        | 应用程序类型    | 数据类型 | 场景            | 机器学习任务                   | 算法                  |
+| ML.NET version | API type          | Status                        | App Type    | Data type | Scenario            | ML Task                   | Algorithms                  |
 |----------------|-------------------|-------------------------------|-------------|-----------|---------------------|---------------------------|-----------------------------|
-|Microsoft.ML.Recommender Preview v0.16.0   | 动态 API | 最新版本 | 控制台应用程序 | .txt 文件 | 推荐 | 矩阵分解 | MatrixFactorizationTrainer (One Class)|
+|Microsoft.ML.Recommender Preview v0.16.0   | Dynamic API | Up-to-date | Console app | .txt files | Recommendation | Matrix Factorization | MatrixFactorizationTrainer (One Class)|
 
-在这个示例中，您可以看到如何使用ML.NET来构建产品推荐方案。
+In this sample, you can see how to use ML.NET to build a product recommendation scenario.
 
-本示例中的推荐方式基于共同购买或经常一起购买的产品，这意味着它将根据客户的购买历史向客户推荐一组产品。
+The style of recommendation in this sample is based upon the co-purchase scenario or products frequently
+bought together which means it will recommend customers a set of products based upon their purchase order
+history.
 
-![替代文字](https://raw.githubusercontent.com/dotnet/machinelearning-samples/master/samples/csharp/getting-started/MatrixFactorization_ProductRecommendation/ProductRecommender/Data/frequentlyboughttogether.png)
+![Alt Text](https://github.com/dotnet/machinelearning-samples/blob/main/samples/csharp/getting-started/MatrixFactorization_ProductRecommendation/ProductRecommender/Data/frequentlyboughttogether.png)
 
-在这个示例中，基于经常一起购买的学习模型来推荐产品。
-
-
-## 问题
-在本教程中，我们将使用亚马逊共同购买产品数据集。
-
-我们将使用One-Class因式分解机来构建我们的产品推荐器，它使用协同过滤方法。
-
-我们介绍的one-class和其他因式分解机的区别在于，在这个数据集中，我们只有购买历史的信息。
-
-我们没有评分或其他详细信息，如产品描述等。
-
-“协同过滤”是在一个基本假设的情况下运作的，即如果某人A在一个问题上与某人B具有相同的意见，则在另一个问题上，相对其他随机选择的人，A更倾向于B的观点。
+In this example, the highlighted products are being recommended based upon a frequently bought together learning model.
 
 
-## 数据集
-原始数据来自SNAP:
+## Problem
+For this tutorial we will use the Amazon product co-purchasing network dataset.
+
+In terms of an approach for building our product recommender we will use One-Class Factorization Machines which uses a collaborative filtering approach.
+
+
+The difference between one-class and other Factorization Machines approach we covered is that in this dataset we only have information on purchase order history.
+
+We do not have ratings or other details like product description etc. available to us.
+
+Matrix Factorization relies on ‘Collaborative filtering’ which operates under the underlying assumption that if a person A has the same opinion as a person B on an issue, A is more likely to have B’s opinion on a different issue than that of a randomly chosen person.
+
+## DataSet
+The original data comes from SNAP:
 https://snap.stanford.edu/data/amazon0302.html
 
-[此处](/ProductRecommender/Data/DATASETS-CITATION.txt)为数据集的引文信息
+DataSet's Citation information can be found [here](/ProductRecommender/Data/DATASETS-CITATION.txt)
 
-## 算法 - [矩阵分解 (推荐)](https://docs.microsoft.com/en-us/dotnet/machine-learning/resources/tasks#recommendation)
+## Algorithm - [Matrix Factorization (Recommendation)](https://docs.microsoft.com/en-us/dotnet/machine-learning/resources/tasks#recommendation)
 
-这个推荐任务的算法是矩阵分解，它是一个执行协同过滤的有监督的机器学习任务。
+The algorithm for this recommendation task is Matrix Factorization, which is a supervised machine learning algorithm performing collaborative filtering.
 
-## 解决方案
+## Solution
 
-要解决此问题，您需要在现有训练数据上建立和训练ML模型，评估其有多好（分析获得的指标），最后您可以使用/测试模型来预测给定输入数据变量的需求。
+To solve this problem, you build and train an ML model on existing training data, evaluate how good it is (analyzing the obtained metrics), and lastly you can consume/test the model to predict the demand given input data variables.
 
 ![Build -> Train -> Evaluate -> Consume](../shared_content/modelpipeline.png)
 
-### 1. 建立模型
+### 1. Build model
 
-建立模型包括: 
+Building a model includes:
 
-* 从 https://snap.stanford.edu/data/amazon0302.html 下载并复制数据集文件Amazon0302.txt。
+* Download and copy the dataset Amazon0302.txt file from https://snap.stanford.edu/data/amazon0302.html.
 
-* 使用以下内容替换列名：ProductID	ProductID_Copurchased
+* Replace the column names with only these instead:  ProductID	ProductID_Copurchased
 
-* 在读取器中，我们已经提供了KeyRange，并且产品ID已经编码，我们需要做的就是使用几个额外的参数调用MatrixFactorizationTrainer。
+* Given in the reader we already provide a KeyRange and product ID's are already encoded all we need to do is
+  call the MatrixFactorizationTrainer with a few extra parameters.
 
-下面是用于建立模型的代码：
+Here's the code which will be used to build the model:
 ```CSharp
- 
-    //STEP 1: Create MLContext to be shared across the model creation workflow objects 
+
+    //STEP 1: Create MLContext to be shared across the model creation workflow objects
     MLContext mlContext = new MLContext();
 
     //STEP 2: Read the trained data using TextLoader by defining the schema for reading the product co-purchase dataset
@@ -63,14 +66,14 @@ https://snap.stanford.edu/data/amazon0302.html
                                                       columns: new[]
                                                                 {
                                                                     new TextLoader.Column("Label", DataKind.Single, 0),
-                                                                    new TextLoader.Column(name:nameof(ProductEntry.ProductID), dataKind:DataKind.UInt32, source: new [] { new TextLoader.Range(0) }, keyCount: new KeyCount(262111)), 
+                                                                    new TextLoader.Column(name:nameof(ProductEntry.ProductID), dataKind:DataKind.UInt32, source: new [] { new TextLoader.Range(0) }, keyCount: new KeyCount(262111)),
                                                                     new TextLoader.Column(name:nameof(ProductEntry.CoPurchaseProductID), dataKind:DataKind.UInt32, source: new [] { new TextLoader.Range(1) }, keyCount: new KeyCount(262111))
                                                                 },
                                                       hasHeader: true,
                                                       separatorChar: '\t');
 
     //STEP 3: Your data is already encoded so all you need to do is specify options for MatrxiFactorizationTrainer with a few extra hyperparameters
-            //        LossFunction, Alpa, Lambda and a few others like K and C as shown below and call the trainer. 
+            //        LossFunction, Alpa, Lambda and a few others like K and C as shown below and call the trainer.
             MatrixFactorizationTrainer.Options options = new MatrixFactorizationTrainer.Options();
             options.MatrixColumnIndexColumnName = nameof(ProductEntry.ProductID);
             options.MatrixRowIndexColumnName = nameof(ProductEntry.CoPurchaseProductID);
@@ -86,11 +89,11 @@ https://snap.stanford.edu/data/amazon0302.html
             var est = mlContext.Recommendation().Trainers.MatrixFactorization(options);
 ```
 
-### 2. 训练模型
+### 2. Train Model
 
-一旦定义了评估器，就可以根据可用的训练数据对评估器进行训练。
+Once the estimator has been defined, you can train the estimator on the training data available to us.
 
-这将返回一个训练过的模型。
+This will return a trained model.
 
 ```CSharp
 
@@ -99,11 +102,11 @@ https://snap.stanford.edu/data/amazon0302.html
     ITransformer model = est.Fit(traindata);
 ```
 
-### 3. 使用模型 
+### 3. Consume Model
 
-我们将通过创建预测引擎/函数来执行此模型的预测。
+We will perform predictions for this model by creating a prediction engine/function as shown below.
 
-预测引擎将以下两个类作为输入。
+The prediction engine creation takes in as input the following two classes.
 
 ```CSharp
     public class Copurchase_prediction
@@ -121,11 +124,11 @@ https://snap.stanford.edu/data/amazon0302.html
     }
 ```
 
-一旦创建了预测引擎，就可以预测两个产品被共同购买的分数。
+Once the prediction engine has been created you can predict scores of two products being co-purchased.
 
 ```CSharp
     //STEP 6: Create prediction engine and predict the score for Product 63 being co-purchased with Product 3.
-    //        The higher the score the higher the probability for this particular productID being co-purchased 
+    //        The higher the score the higher the probability for this particular productID being co-purchased
     var predictionengine = mlContext.Model.CreatePredictionEngine<ProductEntry, Copurchase_prediction>(model);
     var prediction = predictionengine.Predict(
                              new ProductEntry()
@@ -135,6 +138,6 @@ https://snap.stanford.edu/data/amazon0302.html
                              });
 ```
 
-#### 矩阵因式分解的得分
+#### Score in Matrix Factorization
 
-矩阵因式分解产生的分数表示为正例的可能性。得分值越大，成为正例的概率越高。但是，分数没有任何概率信息。当你做一个预测时，你必须计算出多个商品的得分，并挑选得分最高的商品。
+The score produced by matrix factorization represents the likelihood of being a positive case. The larger the score value, the higher probability of being a positive case. However, the score doesn't carry any probability information. When making a prediction, you will have to compute multiple merchandises' scores and pick up the merchandise with the highest score.

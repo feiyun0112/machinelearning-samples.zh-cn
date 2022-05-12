@@ -1,36 +1,36 @@
-﻿# 聚类鸢尾花数据
+# Clustering Iris Data
 
-| ML.NET 版本 | API 类型          | 状态                        | 应用程序类型    | 数据类型 | 场景            | 机器学习任务                   | 算法                  |
+| ML.NET version | API type          | Status                        | App Type    | Data type | Scenario            | ML Task                   | Algorithms                  |
 |----------------|-------------------|-------------------------------|-------------|-----------|---------------------|---------------------------|-----------------------------|
-| v1.4           | 动态 API | 最新版 | 控制台应用程序 | .txt 文件 | 聚类鸢尾花 | 聚类 | K-means++ |
+| v1.4         | Dynamic API | Up-to-date | Console app | .txt file | Clustering Iris flowers | Clustering | K-means++ |
 
-在这个介绍性示例中，您将看到如何使用[ML.NET](https://www.microsoft.com/net/learn/apps/machine-learning-and-ai/ml-dotnet)将不同类型鸢尾花划分为不同组。在机器学习的世界中，这个任务被称为**聚类**。
+In this introductory sample, you'll see how to use [ML.NET](https://www.microsoft.com/net/learn/apps/machine-learning-and-ai/ml-dotnet) to divide iris flowers into different groups that correspond to different types of iris. In the world of machine learning, this task is known as **clustering**.
 
-## 问题
-为了演示聚类API的实际作用，我们将使用三种类型的鸢尾花：setosa、versicolor和virginica。它们都存储在同一个数据集中。尽管这些花的类型是已知的，我们也不会使用它，而只对花瓣长度、花瓣宽度等参数运行聚类算法。这个任务是把所有的花分成三个不同的簇。我们期望不同类型的花属于不同的簇。
+## Problem
+To demonstrate clustering API in action, we will use three types of iris flowers: setosa, versicolor, and virginica. All of them are stored in the same dataset. Even though the type of these flowers is known, we will not use it and run clustering algorithm only on flower parameters such as petal length, petal width, etc. The task is to group all flowers into three different clusters. We would expect the flowers of different types belong to different clusters.
 
-模型的输入使用下列鸢尾花参数：
+The inputs of the model are following iris parameters:
 * petal length
 * petal width
 * sepal length
 * sepal width
 
-## ML 任务 - 聚类
-**聚类**的一般问题是将一组对象分组，使得同一组中的对象彼此之间的相似性大于其他组中的对象。
+## ML task - Clustering
+The generalized problem of **clustering** is to group a set of objects in such a way that objects in the same group are more similar to each other than to those in other groups.
 
-其他一些聚类示例：
-* 将新闻文章分为不同主题：体育，政治，科技等。
-* 按购买偏好对客户进行分组。
-* 将数字图像划分为不同的区域以进行边界检测或物体识别。
+Some other examples of clustering:
+* group news articles into topics: sports, politics, tech, etc.
+* group customers by purchase preferences.
+* divide a digital image into distinct regions for border detection or object recognition.
 
-聚类看起来类似于多类分类，但区别在于对于聚类任务，我们不知道过去数据的答案。 因此，没有“导师”/“主管”可以判断我们的算法的预测是对还是错。 这种类型的ML任务称为**无监督学习**。
+Clustering can look similar to multiclass classification, but the difference is that for clustering tasks we don't know the answers for the past data. So there is no "tutor"/"supervisor" that can tell if our algorithm's prediction was right or wrong. This type of ML task is called **unsupervised learning**.
 
-## 解决方案
-要解决这个问题，首先我们将建立并训练ML模型。 然后我们将使用训练模型来预测鸢尾花的簇。
+## Solution
+To solve this problem, first we will build and train an ML model. Then we will use trained model for predicting a cluster for iris flowers.
 
-### 1. 建立模型
+### 1. Build model
 
-建立模型包括：上传数据（使用`TextLoader`加载`iris-full.txt`），转换数据以便ML算法（使用`Concatenate`）有效地使用数据，并选择学习算法（`KMeans`）。 所有这些步骤都存储在`trainingPipeline`中：
+Building a model includes: uploading data (`iris-full.txt` with `TextLoader`), transforming the data so it can be used effectively by an ML algorithm (with `Concatenate`), and choosing a learning algorithm (`KMeans`). All of those steps are stored in `trainingPipeline`:
 ```CSharp
 //Create the MLContext to share across components for deterministic results
 MLContext mlContext = new MLContext(seed: 1);  //Seed set to any number so you have a deterministic environment
@@ -60,15 +60,13 @@ var dataProcessPipeline = mlContext.Transforms.Concatenate("Features", nameof(Ir
 var trainer = mlContext.Clustering.Trainers.KMeans(featureColumnName: "Features", numberOfClusters: 3);
 var trainingPipeline = dataProcessPipeline.Append(trainer);
 ```
-
-### 2. 训练模型
-训练模型是在给定数据上运行所选算法的过程。 要执行训练，您需要调用`Fit()`方法。
+### 2. Train model
+Training the model is a process of running the chosen algorithm on the given data. To perform training you need to call the Fit() method.
 ```CSharp
 var trainedModel = trainingPipeline.Fit(trainingDataView);
 ```
-
-### 3. 使用模型
-在建立和训练模型之后，我们可以使用`Predict()`API来预测鸢尾花的簇，并计算从给定花参数到每个簇（簇的每个质心）的距离。
+### 3. Consume model
+After the model is build and trained, we can use the `Predict()` API to predict the cluster for an iris flower and calculate the distance from given flower parameters to each cluster (each centroid of a cluster).
 
 ```CSharp
                 // Test with one sample text 

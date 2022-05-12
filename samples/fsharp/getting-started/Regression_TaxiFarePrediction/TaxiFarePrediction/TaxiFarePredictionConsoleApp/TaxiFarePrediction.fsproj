@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="datasets\**" />
+    <EmbeddedResource Remove="datasets\**" />
+    <EmbeddedResource Remove="Helpers\**" />
+    <None Remove="datasets\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\Data\taxi-fare-test.csv" Link="Data\taxi-fare-test.csv" />
+    <None Include="..\Data\taxi-fare-train.csv" Link="Data\taxi-fare-train.csv" />
+    <Compile Include="DataStructures\DataStructures.fs" />
+    <Compile Include="..\..\..\..\common\ConsoleHelper.fs" Link="Common\ConsoleHelper.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.ML" Version="$(MicrosoftMLVersion)" />
+    <PackageReference Include="PLplot" Version="5.13.7" />
+  </ItemGroup>
+
+  <ItemGroup />
+</Project>
